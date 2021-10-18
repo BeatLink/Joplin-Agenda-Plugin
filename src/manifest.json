@@ -1,0 +1,12 @@
+{
+	"manifest_version": 1,
+	"id": "com.gitlab.BeatLink.joplin-plugin-schedule",
+	"app_min_version": "1.7",
+	"version": "0.0.1",
+	"name": "Schedule",
+	"description": "A schedule/calendar/agenda view for joplin that shows upcoming and due tasks.",
+	"author": "BeatLink",
+	"homepage_url": "",
+	"repository_url": "https://gitlab.com/beatlink-code/joplin-plugin-schedule",
+	"keywords": ["joplin", "schedule", "calendar", "agenda", "upcoming", "date"]
+}
