@@ -3,47 +3,8 @@
 /******************************************************************************************************************************************
 ************************************************************* Stop Data *******************************************************************
 ******************************************************************************************************************************************/
-let stopFieldset = document.getElementById('stopFieldset');
-let stopTypeDropdown = document.getElementById('stopTypeDropdown');
-let stopNumberSpinbutton = document.getElementById('stopNumberSpinbutton');
-let stopDatePicker = document.getElementById('stopDatePicker');
-
-stopTypeDropdown.addEventListener("change", onStopTypeChanged);
-stopNumberSpinbutton.addEventListener("change", onStopNumberChanged);
-stopDatePicker.addEventListener("change", onStopDateChanged);
-
-function onStopTypeChanged(){
-    recurrence.stopType = stopTypeDropdown.value
-    if (recurrence.enabled && recurrence.stopType == 'date') {
-        stopDatePicker.style.display='block';
-    } else {
-        stopDatePicker.style.display='none'
-    }
-    if (recurrence.enabled && recurrence.stopType == 'number') {
-        stopNumberSpinbutton.style.display='block';
-    } else {
-        stopNumberSpinbutton.style.display='none'
-    }
-    saveData()
-}
-
-function onStopNumberChanged(){
-    recurrence.stopNumber = stopNumberSpinbutton.value
-    saveData()
-}
-
-function onStopDateChanged(){
-    recurrence.stopDate = stopDatePicker.value
-    saveData()
-}
 
 
-/******************************************************************************************************************************************
-************************************************************* Month Weekday ***************************************************************
-*****************************************************************************************************************************************/
-let monthFieldset = document.getElementById('monthFieldset');
-let monthOrdinalDropdown = document.getElementById('monthOrdinalDropdown');
-let monthWeekdayDropdown = document.getElementById('monthWeekdayDropdown');
 
 monthWeekdayDropdown.addEventListener('change', onMonthWeekdayChanged);
 monthOrdinalDropdown.addEventListener('change', onMonthOrdinalChanged)
