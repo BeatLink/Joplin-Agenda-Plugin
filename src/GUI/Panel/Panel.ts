@@ -1,7 +1,7 @@
 /* Imports *****************************************************************************************************************************************/
 import joplin from 'api';
 import {SettingItemType, ToolbarButtonLocation } from 'api/types';
-import { getTodos } from '../../Logic/joplin';
+import { getTodos, openTodo } from '../../Logic/joplin';
 
 var panel = null;
 
@@ -11,8 +11,10 @@ Sets up the panel
 export async function setupPanel(){                 
     async function createPanel(){
         panel = await joplin.views.panels.create('agendaPanel')
-        //await joplin.views.dialogs.addScript(panel, './GUI/Panel/Panel.js')
+        await joplin.views.panels.onMessage(panel, panelEventHandler)
+        await joplin.views.dialogs.addScript(panel, 'GUI/Panel/Panel.js')
         await joplin.views.dialogs.addScript(panel, 'GUI/Panel/Panel.css')
+
     }
     async function setupSettings(){
         await joplin.settings.registerSection("agenda", {
@@ -89,16 +91,24 @@ export async function getTodoHTML(todo){
             <input type="hidden" id="inputTaskID" value="${todo.id}">
             <input id="completedCheckbox" type="checkbox">
             <label id="dueDate">${timeString}</label> - 
-            <a id="taskTitle" href="#" onclick="onTaskClicked(${todo.id})">${todo.title}</a>
+            <a id="taskTitle" href="#" onclick="onTodoClicked('${todo.id}')">${todo.title}</a>
         </p>
     `
+    console.log(htmlTemplate)
     return htmlTemplate
 }
 
 
+export async function panelEventHandler(message){
+    console.log(message)
+    if (message[0] == 'todoClicked'){
+        openTodo(message[1])
+    }
+
+}
+
 
 export async function togglePanelSetting(){
-
     //var selectedNote = await getSelectedNote()                          // Get current note
     //var selectedNoteID = selectedNote.id                                // Get ID of selected note
     //var oldRecurrence = await getRecord(selectedNoteID)       // Get recurrence data for current note
