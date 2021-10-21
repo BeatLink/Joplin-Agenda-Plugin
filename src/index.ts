@@ -1,10 +1,11 @@
-/* Imports ********************************************************************************************************************************/
+/** Imports *****************************************************************************************************************************************/
 import joplin from 'api';
-import { main } from './Logic/core';
+import { setupPanel } from './GUI/Panel/Panel';
 
-/* Plugin Registration ********************************************************************************************************************
-    Registers the plugin with joplin.
-*/
-joplin.plugins.register({                                               // calls the register function
-    onStart: main,                                                      // Sets the onStart function to main
+
+/** Plugin Registration *****************************************************************************************************************************
+ * Registers the plugin with joplin.                                                                                                                *
+ ***************************************************************************************************************************************************/
+joplin.plugins.register({                                           // calls the register function
+    onStart: setupPanel                                             // Sets the onStart function to main
 });
