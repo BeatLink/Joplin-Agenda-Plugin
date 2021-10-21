@@ -1,9 +1,1 @@
-#resetDateFieldset, #intervalFieldset, #weekFieldset, #monthFieldset, #monthOrdinalDropdown, #stopFieldset, #stopTypeDropdown #stopNumberSpinbutton, #stopDatePciker{
-    display: none;
-}
-
-fieldset {
-    margin: 12px 0px;
-}
-
 
