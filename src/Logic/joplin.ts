@@ -1,6 +1,6 @@
 import joplin from "api";
 
-/* getTodos ***********************************************************************************************************************************
+/* getTodos *****************************************************************************************************************************************
     Returns the list of uncompleted todos sorted by due date
 */
 export async function getTodos(){
@@ -22,11 +22,16 @@ export async function getTodos(){
     return sortedTodos
 }
 
-
-export async function openNote(noteID: string){
-    await joplin.commands.execute('openNote', noteID);
+/* openTodo *****************************************************************************************************************************************
+    Opens the note with the given ID
+*/
+export async function openTodo(todoID: string){
+    await joplin.commands.execute('openNote', todoID);
 }
 
+/* toggleTodoCompletion *****************************************************************************************************************************
+    Toggles the todo completion state
+*/
 export async function toggleToDoCompletion(noteID: string){
     await joplin.data.put(['notes', noteID], null, { todo_completed: 0});
 }
