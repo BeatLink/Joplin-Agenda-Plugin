@@ -16,7 +16,7 @@ export async function getTodos(){
 	}
     var filteredTodos = []
     for (var todo of allTodos){
-        if (todo.is_todo == 1  && todo.todo_completed == 0){
+        if (todo.is_todo == 1  && todo.todo_completed == 0 && todo.todo_due != 0){
             filteredTodos.push(todo)
         }
     }
