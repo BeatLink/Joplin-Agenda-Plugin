@@ -12,7 +12,7 @@ export async function setupPanel(){
     async function createPanel(){
         panel = await joplin.views.panels.create('agendaPanel')
         //await joplin.views.dialogs.addScript(panel, './GUI/Panel/Panel.js')
-        //await joplin.views.dialogs.addScript(panel, './GUI/Panel/Panel.css')
+        await joplin.views.dialogs.addScript(panel, 'GUI/Panel/Panel.css')
     }
     async function setupSettings(){
         await joplin.settings.registerSection("agenda", {
@@ -68,22 +68,18 @@ async function togglePanelVisibility(){
     await updatePanelData();
 }
 
-export async function updatePanelData(){
-    var formatted_todos = "<h1>Schedule</h1>"
-    for (var todoDates of (await getTodos()).entries()){
-        console.log(todoDates)
-        var dateHeading = `<h2>${todoDates[0]}</h2>`
-        formatted_todos = formatted_todos.concat(dateHeading)    
-        for (var todo of todoDates[1]){
-            var formatted_html = await getTodoHTML(todo)
-            formatted_todos = formatted_todos.concat(formatted_html)    
+export async function updatePanelData(){   
+    var HTMLString = ""
+    for (var todoMap of (await getTodos()).entries()){
+        HTMLString = HTMLString.concat(`<h2>${todoMap[0]}</h2>`)    
+        for (var todo of todoMap[1]){
+            HTMLString = HTMLString.concat(await getTodoHTML(todo))    
         }
     }
-    //const PanelHTML = await require('./Panel.html').default;
-   //var replacedHTML = DialogHTML.replace("RECURRENCE_DATA", btoa(recurrenceData.toJSON()))
-    await joplin.views.panels.setHtml(panel, formatted_todos);
+    const BaseHTML = await require('./Panel.html').default;
+    var replacedHTML = BaseHTML.replace("<<TODOS>>", HTMLString)
+    await joplin.views.panels.setHtml(panel, replacedHTML);
 }
-
 
 export async function getTodoHTML(todo){
     var date = new Date(todo.todo_due);
@@ -93,7 +89,7 @@ export async function getTodoHTML(todo){
             <input type="hidden" id="inputTaskID" value="${todo.id}">
             <input id="completedCheckbox" type="checkbox">
             <label id="dueDate">${timeString}</label> - 
-            <a id="taskTitle" onclick="onTaskClicked(${todo.id})">${todo.title}</a>
+            <a id="taskTitle" href="#" onclick="onTaskClicked(${todo.id})">${todo.title}</a>
         </p>
     `
     return htmlTemplate
@@ -101,7 +97,7 @@ export async function getTodoHTML(todo){
 
 
 
-export async function toggleSchedulePanelSetting(){
+export async function togglePanelSetting(){
 
     //var selectedNote = await getSelectedNote()                          // Get current note
     //var selectedNoteID = selectedNote.id                                // Get ID of selected note
