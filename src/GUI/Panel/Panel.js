@@ -5,15 +5,16 @@
 
 
 async function onTodoClicked(todoID){
-    console.log('hi')
-    const response = await webviewApi.postMessage(['todoClicked', todoID]);
+    await webviewApi.postMessage(['todoClicked', todoID]);
+}
+
+async function onTodoChecked(todoID){
+    await webviewApi.postMessage(['todoChecked', todoID]);
 }
 
 
 
-
 `
-
 let weekFieldset = document.getElementById('weekFieldset');
 let weekSundayCheckbox = document.getElementById('weekSundayCheckbox')
 let weekMondayCheckbox = document.getElementById('weekMondayCheckbox')
