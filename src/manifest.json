@@ -1,12 +1,12 @@
 {
 	"manifest_version": 1,
-	"id": "com.gitlab.BeatLink.joplin-plugin-schedule",
+	"id": "com.gitlab.BeatLink.joplin-plugin-agenda",
 	"app_min_version": "1.7",
 	"version": "0.0.1",
-	"name": "Schedule",
-	"description": "A schedule/calendar/agenda view for joplin that shows upcoming and due tasks.",
+	"name": "Genda",
+	"description": "An agenda/calendar/schedule panel for joplin that shows all uncompleted tasks with a due date.",
 	"author": "BeatLink",
 	"homepage_url": "",
-	"repository_url": "https://gitlab.com/beatlink-code/joplin-plugin-schedule",
+	"repository_url": "https://gitlab.com/beatlink-code/joplin-plugin-agenda",
 	"keywords": ["joplin", "schedule", "calendar", "agenda", "upcoming", "date"]
 }
