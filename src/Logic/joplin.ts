@@ -1,48 +1,32 @@
 import joplin from "api";
 
-export async function getAllToDos(){
+/* getTodos ***********************************************************************************************************************************
+    Returns the list of uncompleted todos sorted by due date
+*/
+export async function getTodos(){
     var allTodos = [];
     let pageNum = 0;
-    let morePagesExist = false;
-	do {
-		let response = await joplin.data.get(['notes'], { fields: ['id', 'title', 'body', 'todo_completed'], page: pageNum++})
-        allNotes = allNotes.concat(response.items)
+    let morePagesExist = true;
+	while (morePagesExist) {
+		let response = await joplin.data.get(['notes'], { fields: ['id', 'title', 'is_todo', 'todo_completed', 'todo_due'], page: pageNum++})
+        allTodos = allTodos.concat(response.items)
         morePagesExist = response.has_more;
-	} while (morePagesExist)
-    console.log(allTodos)
-    return allTodos;
-}
-
-export async function getCompletedTasks(){
-    var completedTodos = [];
-    let pageNum = 0;
-    let morePagesExist = false;
-	do {
-		let response = await joplin.data.get(['search'],  {'query': 'iscompleted:1', fields: ['id', 'title', 'body', "todo_due", 'todo_completed'], page: pageNum++})
-        completedTodos = completedTodos.concat(response.items)
-        morePagesExist = response.has_more;
-	} while (morePagesExist)
-    return completedTodos;
-}
-
-export async function getNote(noteID){
-    var note = null
-    try {
-        note = await joplin.data.get(['notes', noteID], { fields: ['id', 'title', 'body', 'todo_due', 'todo_completed']})
-    } catch(error) {
-        if (error.message != "Not Found") { throw(error) }
+	}
+    var filteredTodos = []
+    for (var todo of allTodos){
+        if (todo.is_todo == 1  && todo.todo_completed == 0){
+            filteredTodos.push(todo)
+        }
     }
-    return note
+    var sortedTodos = filteredTodos.sort((n1,n2) => n1.todo_due - n2.todo_due)
+    return sortedTodos
 }
 
-export async function getSelectedNote(){
-    return await joplin.workspace.selectedNote()
+
+export async function openNote(noteID: string){
+    await joplin.commands.execute('openNote', noteID);
 }
 
-export async function markTaskUncompleted(id){
-    await joplin.data.put(['notes', id], null, { todo_completed: 0});
-}
-
-export async function setTaskDueDate(id: string, date){
-    await joplin.data.put(['notes', id], null, { todo_due: date.getTime()});
+export async function toggleToDoCompletion(noteID: string){
+    await joplin.data.put(['notes', noteID], null, { todo_completed: 0});
 }
