@@ -1,14 +1,14 @@
 /* Imports *****************************************************************************************************************************************/
 import joplin from 'api';
 import {SettingItemType, ToolbarButtonLocation } from 'api/types';
-import { getTodos, openTodo } from '../../Logic/joplin';
+import { getTodos, openTodo, setupTaskChangeHandler, toggleToDoCompletion } from '../../Logic/joplin';
 
 var panel = null;
 
-/* setupPanel ***************************************************************************************************************************************
-Sets up the panel
-*/
-export async function setupPanel(){                 
+/** setupPanel **************************************************************************************************************************************
+ * Sets up the panel                                                                                                                                *
+ ****************************************************************************************************************************************************/
+export async function setupPanel(){
     async function createPanel(){
         panel = await joplin.views.panels.create('agendaPanel')
         await joplin.views.panels.onMessage(panel, panelEventHandler)
@@ -58,6 +58,8 @@ export async function setupPanel(){
     await registerCommands()
     await createToolbarButton()
     await updatePanelData()
+    await setupTaskChangeHandler(updatePanelData)
+
 }
 
 /* togglePanelVisibility ****************************************************************************************************************************
@@ -89,53 +91,20 @@ export async function getTodoHTML(todo){
     var htmlTemplate = `
         <p>
             <input type="hidden" id="inputTaskID" value="${todo.id}">
-            <input id="completedCheckbox" type="checkbox">
+            <input id="completedCheckbox" type="checkbox" onchange="onTodoChecked('${todo.id}')" ${todo.todo_completed == 1 ? "checked" : "" }>
             <label id="dueDate">${timeString}</label> - 
             <a id="taskTitle" href="#" onclick="onTodoClicked('${todo.id}')">${todo.title}</a>
         </p>
     `
-    console.log(htmlTemplate)
     return htmlTemplate
 }
 
 
 export async function panelEventHandler(message){
-    console.log(message)
     if (message[0] == 'todoClicked'){
-        openTodo(message[1])
-    }
-
-}
-
-
-export async function togglePanelSetting(){
-    //var selectedNote = await getSelectedNote()                          // Get current note
-    //var selectedNoteID = selectedNote.id                                // Get ID of selected note
-    //var oldRecurrence = await getRecord(selectedNoteID)       // Get recurrence data for current note
-    var newRecurrence = await openDialog();        // Load recurrence data into recurrence dialog, Open recurrence dialog and save new recurrence
-    /*if (newRecurrence){
-        await updateRecord(selectedNoteID, newRecurrence)
-    }*/
-}
-
-
-
-export async function openDialog(){
-    /*
-    await setRecurrence(recurrenceData)                          // load recurrence into dialog
-    var formResult = await joplin.views.dialogs.open(dialog);             // Show Dialog
-    return await getRecurrence(formResult)
-    */
-}
-/*
-
-async function getRecurrence(formResult){
-    if (formResult.id == 'ok') {
-        var encodedRecurrenceData = formResult.formData.recurrenceForm.recurrenceData                   // gets the encoded recurrence data from the hidden form
-        var decodedRecurrenceData = atob(encodedRecurrenceData)             // decodes the recurrence data into the json string
-        var recurrence = new Recurrence()
-        recurrence.fromJSON(decodedRecurrenceData)
-        return recurrence
+        await openTodo(message[1])
+    } else if (message[0] == 'todoChecked'){
+        await toggleToDoCompletion(message[1])
+        await updatePanelData()
     }
 }
-*/
