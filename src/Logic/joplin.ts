@@ -1,4 +1,6 @@
 import joplin from "api";
+import { groupBy } from "./misc"
+
 
 /* getTodos *****************************************************************************************************************************************
     Returns the list of uncompleted todos sorted by due date
@@ -19,7 +21,8 @@ export async function getTodos(){
         }
     }
     var sortedTodos = filteredTodos.sort((n1,n2) => n1.todo_due - n2.todo_due)
-    return sortedTodos
+    var todoArray = groupBy(sortedTodos, (todo) => todo.todo_due != 0 ? (new Date(todo.todo_due)).toDateString() : "No Due Date")
+    return todoArray
 }
 
 /* openTodo *****************************************************************************************************************************************
