@@ -9,9 +9,6 @@ An agenda/calendar/schedule panel plugin for joplin that shows all uncompleted t
 ### The Agenda Panel
 ![Screenshot2](docs/Screenshot2.png)
 
-## Todo
-* Publish to repo
-* Create post on forum
 
 ## Development
 * Download Repo
