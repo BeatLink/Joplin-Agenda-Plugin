@@ -48,10 +48,10 @@ async function setupSettings(){
     })
     await joplin.settings.registerSettings({
         "panelVisibility": {
-            label: "Panel Visibility",
+            label: "Show Agenda Panel",
             type: SettingItemType.Bool,
             value: true,
-            public: false,
+            public: true,
             section: "settingsSection"
         },
         "showCompletedTodos": {
@@ -81,8 +81,8 @@ async function setupCommands(){
         label: 'Toggle Agenda Panel',                     
         iconName: 'fas fa-calendar',                  
         execute: async () => {
-            var visibility = await joplin.settings.value('PanelVisibility')
-            await joplin.settings.setValue('PanelVisibility', !visibility)
+            var visibility = await joplin.settings.value('panelVisibility')
+            await joplin.settings.setValue('panelVisibility', !visibility)
             await updatePanelData();        
         },
     });
