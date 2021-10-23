@@ -1,7 +1,7 @@
-body {
+#agendaBody {
     padding: 20px;
     overflow: scroll;
     height: 100vh;
-    border-left: 2px solid #bbbbbb;
-    border-right: 2px solid #bbbbbb;
+    border-left: 1px solid #bbbbbb;
+    border-right: 1px solid #bbbbbb;
 }

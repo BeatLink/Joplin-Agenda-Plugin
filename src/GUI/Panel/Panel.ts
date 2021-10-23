@@ -135,16 +135,16 @@ export async function updatePanelData(){
         var allTodosHTMLString = ""
         var allTodos = (await getTodos()).entries()
         for (var date of allTodos){
-            allTodosHTMLString = allTodosHTMLString.concat(`<h2>${date[0]}</h2>`)    
+            allTodosHTMLString = allTodosHTMLString.concat(`<h2 class="agendaDate">${date[0]}</h2>`)    
             for (var todo of date[1]){
                 var dueDate = new Date(todo.todo_due)
                 var dueString = todo.todo_due != 0 ? dueDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}).concat(" - ") : ""
                 var checkedString = todo.todo_completed != 0 ? "checked" : "" 
                 var todoHTMLString = `
-                    <p>
-                        <input type="checkbox" onchange="onTodoChecked('${todo.id}')" ${checkedString}>
-                        <label>${dueString}</label>
-                        <a href="#" onclick="onTodoClicked('${todo.id}')">${todo.title}</a>
+                    <p class="agendaTodo">
+                        <input class="agendaTodoCheckbox" type="checkbox" onchange="onTodoChecked('${todo.id}')" ${checkedString}>
+                        <label class="agendaTodoTime">${dueString}</label>
+                        <a class="agendaTodoTitle" href="#" onclick="onTodoClicked('${todo.id}')">${todo.title}</a>
                     </p>
                 `
                 allTodosHTMLString = allTodosHTMLString.concat(todoHTMLString)    
