@@ -5,3 +5,5 @@
     border-left: 1px solid #bbbbbb;
     border-right: 1px solid #bbbbbb;
 }
+
+a { color: inherit; text-decoration: none;} 
