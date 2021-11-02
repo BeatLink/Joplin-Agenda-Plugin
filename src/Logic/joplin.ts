@@ -19,7 +19,8 @@ export async function getTodos(){
         (todo.todo_due != 0 || showNoDue)
     ))
     var sortedTodos = filteredTodos.sort((n1,n2) => n1.todo_due - n2.todo_due)
-    var todoArray = groupBy(sortedTodos, (todo) => todo.todo_due != 0 ? (new Date(todo.todo_due)).toDateString() : "No Due Date")
+    var todoArray = groupBy(sortedTodos, (todo) => todo.todo_due != 0 ? (new Date(todo.todo_due)).toLocaleDateString(
+        undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : "No Due Date")
     return todoArray
 }
 
