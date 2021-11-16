@@ -17,4 +17,7 @@
 
 }
 
-a { color: inherit; text-decoration: none;} 
+.agendaTodoLabel { 
+    color: inherit; 
+    text-decoration: none;
+} 

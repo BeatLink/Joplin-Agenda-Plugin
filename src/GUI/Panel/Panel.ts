@@ -143,8 +143,7 @@ export async function updatePanelData(){
                 var todoHTMLString = `
                     <p class="agendaTodo">
                         <input class="agendaTodoCheckbox" type="checkbox" onchange="onTodoChecked('${todo.id}')" ${checkedString}>
-                        <label class="agendaTodoTime">${dueString}</label>
-                        <a class="agendaTodoTitle" href="#" onclick="onTodoClicked('${todo.id}')">${todo.title}</a>
+                        <a class="agendaTodoLabel" href="#" onclick="onTodoClicked('${todo.id}')">${dueString} ${todo.title}</a>
                     </p>
                 `
                 allTodosHTMLString = allTodosHTMLString.concat(todoHTMLString)    
