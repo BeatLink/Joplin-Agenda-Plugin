@@ -41,27 +41,27 @@ async function createPanel(){
  * Registers the settings for the plugin                                                                                                            *
  ***************************************************************************************************************************************************/
 async function setupSettings(){
-    await joplin.settings.registerSection("settingsSection", {
+    await joplin.settings.registerSection("agendaSettingsSection", {
         label: "Agenda",
         description: "Agenda Plugin Settings",
         iconName: 'fas fa-calendar'
     })
     await joplin.settings.registerSettings({
-        "panelVisibility": {
+        "agendaPanelVisibility": {
             label: "Show Agenda Panel",
             type: SettingItemType.Bool,
             value: true,
             public: true,
             section: "settingsSection"
         },
-        "showCompletedTodos": {
+        "agendaShowCompletedTodos": {
             label: "Show Completed To-Dos",
             type: SettingItemType.Bool,
             value: true,
             public: true,
             section: "settingsSection"
         },
-        "showNoDueDateTodos": {
+        "agendaShowNoDueDateTodos": {
             label: "Show To-Dos without Due Date",
             type: SettingItemType.Bool,
             value: true,
@@ -77,31 +77,31 @@ async function setupSettings(){
  ***************************************************************************************************************************************************/
 async function setupCommands(){
     await joplin.commands.register({ 
-        name: 'togglePanelVisibility',                       
+        name: 'agendaTogglePanelVisibility',                       
         label: 'Toggle Agenda Panel',                     
         iconName: 'fas fa-calendar',                  
         execute: async () => {
-            var visibility = await joplin.settings.value('panelVisibility')
-            await joplin.settings.setValue('panelVisibility', !visibility)
+            var visibility = await joplin.settings.value('agendaPanelVisibility')
+            await joplin.settings.setValue('agendaPanelVisibility', !visibility)
             await updatePanelData();        
         },
     });
     await joplin.commands.register({                       
-        name: 'toggleShowCompletedTodos',                  
+        name: 'agendaToggleShowCompletedTodos',                  
         label: 'Show Completed To-Dos',                    
         iconName: 'fas fa-calendar',                       
         execute: async () => {
-            var showCompletedTodos = await joplin.settings.value('showCompletedTodos')
-            await joplin.settings.setValue('showCompletedTodos', !showCompletedTodos)
+            var showCompletedTodos = await joplin.settings.value('agendaShowCompletedTodos')
+            await joplin.settings.setValue('agendaShowCompletedTodos', !showCompletedTodos)
         },
     });
     await joplin.commands.register({
-        name: 'toggleShowNoDueDateTodos',
+        name: 'agendaToggleShowNoDueDateTodos',
         label: 'Show To-Dos without Due Date', 
         iconName: 'fas fa-calendar', 
         execute: async () => {
-            var showNoDueDateTodos = await joplin.settings.value('showNoDueDateTodos')
-            await joplin.settings.setValue('showNoDueDateTodos', !showNoDueDateTodos)
+            var showNoDueDateTodos = await joplin.settings.value('agendaShowNoDueDateTodos')
+            await joplin.settings.setValue('agendaShowNoDueDateTodos', !showNoDueDateTodos)
         },
     });
     joplin.settings.onChange(updatePanelData)
@@ -113,13 +113,13 @@ async function setupCommands(){
  ***************************************************************************************************************************************************/
 async function setupControls(){
     await joplin.views.toolbarButtons.create( 
-        'togglePanelVisibilityButton',
-        'togglePanelVisibility',
+        'agendaTogglePanelVisibilityButton',
+        'agendaTogglePanelVisibility',
         ToolbarButtonLocation.NoteToolbar
     );
-    await joplin.views.menus.create("menu", "Agenda", [
-            {label: "Show Completed Todos", commandName: 'toggleShowCompletedTodos'}, 
-            {label: "Show To-Dos without Due Dates", commandName: 'toggleShowNoDueDateTodos'}
+    await joplin.views.menus.create("agendaMenu", "Agenda", [
+            {label: "Show Completed Todos", commandName: 'agendaToggleShowCompletedTodos'}, 
+            {label: "Show To-Dos without Due Dates", commandName: 'agendaToggleShowNoDueDateTodos'}
         ], MenuItemLocation.Tools
     )
 }
@@ -129,7 +129,7 @@ async function setupControls(){
  * Displays all todos in the panel, grouped by date and sorted by time                                                                              *
  ***************************************************************************************************************************************************/
 export async function updatePanelData(){  
-    var visibility = await joplin.settings.value('panelVisibility')
+    var visibility = await joplin.settings.value('agendaPanelVisibility')
     await joplin.views.panels.show(panel, visibility) 
     if (visibility){
         var allTodosHTMLString = ""

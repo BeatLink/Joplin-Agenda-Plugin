@@ -5,8 +5,8 @@ import { groupBy } from "./misc"
  * Returns the list of uncompleted todos sorted by due date                                                                                         *
  ***************************************************************************************************************************************************/
 export async function getTodos(){
-    var showCompleted = await joplin.settings.value("showCompletedTodos")
-    var showNoDue = await joplin.settings.value("showNoDueDateTodos")
+    var showCompleted = await joplin.settings.value("agendaShowCompletedTodos")
+    var showNoDue = await joplin.settings.value("agendaShowNoDueDateTodos")
     var allTodos = [];
     let pageNum = 0;
     do {
