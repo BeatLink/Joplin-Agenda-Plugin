@@ -52,21 +52,21 @@ async function setupSettings(){
             type: SettingItemType.Bool,
             value: true,
             public: true,
-            section: "settingsSection"
+            section: "agendaSettingsSection"
         },
         "agendaShowCompletedTodos": {
             label: "Show Completed To-Dos",
             type: SettingItemType.Bool,
             value: true,
             public: true,
-            section: "settingsSection"
+            section: "agendaSettingsSection"
         },
         "agendaShowNoDueDateTodos": {
             label: "Show To-Dos without Due Date",
             type: SettingItemType.Bool,
             value: true,
             public: true,
-            section: "settingsSection"
+            section: "agendaSettingsSection"
         }
     })
 }
