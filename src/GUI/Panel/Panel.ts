@@ -67,6 +67,18 @@ async function setupSettings(){
             value: true,
             public: true,
             section: "settingsSection"
+        },
+        "agendaSortItemsBy": {
+            label: "Sort Items By",
+            type: SettingItemType.String,
+            isEnum:true,
+            options: {
+                'none': 'None',
+                'title': 'Title',
+            },
+            value: 'none',
+            public: true,
+            section: "settingsSection"
         }
     })
 }

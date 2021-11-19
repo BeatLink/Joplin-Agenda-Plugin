@@ -7,6 +7,7 @@ import { groupBy } from "./misc"
 export async function getTodos(){
     var showCompleted = await joplin.settings.value("agendaShowCompletedTodos")
     var showNoDue = await joplin.settings.value("agendaShowNoDueDateTodos")
+    var sortBy = await joplin.settings.value("agendaSortItemsBy");
     var allTodos = [];
     let pageNum = 0;
     do {
@@ -18,7 +19,20 @@ export async function getTodos(){
         (todo.todo_completed == 0 || showCompleted) && 
         (todo.todo_due != 0 || showNoDue)
     ))
-    var sortedTodos = filteredTodos.sort((n1,n2) => n1.todo_due - n2.todo_due)
+    
+    var sortedTodos = filteredTodos.sort((n1,n2) => 
+        {
+            if (n1.todo_due == n2.todo_due || (n1.todo_due == null && n2.todo_due == null)){      
+                if (sortBy == 'title'){
+                    return n1.title.localeCompare(n2.title);
+                }
+                return 0;
+            }else{
+                return n1.todo_due - n2.todo_due;
+            }
+        }
+    )
+
     var todoArray = groupBy(sortedTodos, (todo) => todo.todo_due != 0 ? (new Date(todo.todo_due)).toLocaleDateString(
         undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : "No Due Date")
     return todoArray
