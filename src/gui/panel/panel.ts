@@ -25,8 +25,8 @@ export async function setupPlugin(){
  ****************************************************************************************************************************************************/
 async function createPanel(){
     panel = await joplin.views.panels.create('panel')
-    await joplin.views.dialogs.addScript(panel, 'GUI/Panel/Panel.js')
-    await joplin.views.dialogs.addScript(panel, 'GUI/Panel/Panel.css')
+    await joplin.views.dialogs.addScript(panel, 'gui/panel/panel.js')
+    await joplin.views.dialogs.addScript(panel, 'gui/panel/panel.css')
     await joplin.views.panels.onMessage(panel, async (message) => {
         if (message[0] == 'todoClicked'){
             await openTodo(message[1])
@@ -149,7 +149,7 @@ export async function updatePanelData(){
         var formatter = formatterList[format]
         console.log(formatter)
         var formattedTodosHTML = await formatter(await getTodos())
-        const BaseHTML = await require('./Panel.html').default;
+        const BaseHTML = await require('./panel.html').default;
         var replacedHTML = BaseHTML.replace("<<TODOS>>", formattedTodosHTML)
         await joplin.views.panels.setHtml(panel, replacedHTML);
     }
