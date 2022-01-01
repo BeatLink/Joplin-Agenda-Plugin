@@ -1,6 +1,9 @@
 /** Imports *****************************************************************************************************************************************/
 import joplin from 'api';
-import { setupPlugin } from './core/panel';
+import { setupControls } from './core/controls';
+import { connectNoteChangedCallback } from './core/joplin';
+import { createPanel, updatePanelData } from './core/panel';
+import { setupSettings } from './core/settings';
 
 
 /** Plugin Registration *****************************************************************************************************************************
@@ -9,3 +12,15 @@ import { setupPlugin } from './core/panel';
 joplin.plugins.register({
     onStart: setupPlugin
 });
+
+
+/** setupPlugin *************************************************************************************************************************************
+ * Runs all functions to initialize the plugin                                                                                                                              *
+ ****************************************************************************************************************************************************/
+ export async function setupPlugin(){                
+    await createPanel()
+    await setupSettings()
+    await setupControls()
+    await updatePanelData()
+    await connectNoteChangedCallback(updatePanelData)
+}

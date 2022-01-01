@@ -1,5 +1,4 @@
 import joplin from "api";
-import { groupBy } from "./misc"
 
 /** getTodos ****************************************************************************************************************************************
  * Returns the list of uncompleted todos sorted by due date                                                                                         *
