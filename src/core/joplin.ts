@@ -1,24 +1,28 @@
 import joplin from "api";
 
 /** getTodos ****************************************************************************************************************************************
- * Returns the list of uncompleted todos sorted by due date                                                                                         *
+ * Returns the list of todos, sorted by due date. If show completed is true, it will include completed todos. If show no due is true, it will       *
+ * include todos without due dates.                                                                                                                 *
  ***************************************************************************************************************************************************/
-export async function getTodos(){
-    var showCompleted = await joplin.settings.value("agendaShowCompletedTodos")
-    var showNoDue = await joplin.settings.value("agendaShowNoDueDateTodos")
+export async function getTodos(showCompleted, showNoDue){
+    const completed = showCompleted ? "iscompleted:1" : "iscompleted:0"
+    const noDue = showNoDue ? "" : "due:1970"
     var allTodos = [];
     let pageNum = 0;
     do {
-        var response = await joplin.data.get(['notes'], { fields: ['id', 'title', 'is_todo', 'todo_completed', 'todo_due'], page: pageNum++})
+        console.log("fetching todos")
+        var response = await joplin.data.get(
+            ['search'],
+            {
+                query: `type:todo ${completed} ${noDue}`,
+                fields: ['id', 'title', 'todo_completed', 'todo_due'], 
+                type: 'note',
+                order_by: 'todo_due',
+                page: pageNum++,
+            })
         allTodos = allTodos.concat(response.items)
     } while (response.has_more)
-    var filteredTodos = allTodos.filter((todo, _index, _array) => (
-        (todo.is_todo != 0)  && 
-        (todo.todo_completed == 0 || showCompleted) && 
-        (todo.todo_due != 0 || showNoDue)
-    ))
-    var sortedTodos = filteredTodos.sort((n1,n2) => n1.todo_due - n2.todo_due)
-    return sortedTodos
+    return allTodos
 }
 
 /** openTodo ****************************************************************************************************************************************
