@@ -1,8 +1,7 @@
 /** Imports *****************************************************************************************************************************************/
 import joplin from 'api';
 import { setupControls } from './core/controls';
-import { connectNoteChangedCallback } from './core/joplin';
-import { createPanel, updatePanelData } from './core/panel';
+import { createPanel, setupPanelUpdatePolling, updatePanelData } from './core/panel';
 import { setupSettings } from './core/settings';
 
 /** Plugin Registration *****************************************************************************************************************************
@@ -20,5 +19,5 @@ joplin.plugins.register({
     await setupControls()
     await createPanel()
     await updatePanelData()
-    await connectNoteChangedCallback(updatePanelData)
+    await setupPanelUpdatePolling()
 }

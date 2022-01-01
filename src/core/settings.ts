@@ -45,6 +45,13 @@ export async function setupSettings(){
             public: true,
             section: "agendaSettingsSection"
         },
+        "agendaSearchCritera": {
+            label: "Enter the search criteria for todos shown by Agenda",
+            type: SettingItemType.String,
+            value: "",
+            public: true,
+            section: "agendaSettingsSection"
+        },
     })
     joplin.settings.onChange(updatePanelData)
 }

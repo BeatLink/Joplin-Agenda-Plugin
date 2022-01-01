@@ -4,8 +4,8 @@ import joplin from "api";
  * Returns the list of todos, sorted by due date. If show completed is true, it will include completed todos. If show no due is true, it will       *
  * include todos without due dates.                                                                                                                 *
  ***************************************************************************************************************************************************/
-export async function getTodos(showCompleted, showNoDue){
-    const completed = showCompleted ? "iscompleted:1" : "iscompleted:0"
+export async function getTodos(showCompleted, showNoDue, searchCritera){
+    const completed = showCompleted ? "" : "iscompleted:0"
     const noDue = showNoDue ? "" : "due:1970"
     var allTodos = [];
     let pageNum = 0;
@@ -14,7 +14,7 @@ export async function getTodos(showCompleted, showNoDue){
         var response = await joplin.data.get(
             ['search'],
             {
-                query: `type:todo ${completed} ${noDue}`,
+                query: `type:todo ${completed} ${noDue} ${searchCritera}`,
                 fields: ['id', 'title', 'todo_completed', 'todo_due'], 
                 type: 'note',
                 order_by: 'todo_due',

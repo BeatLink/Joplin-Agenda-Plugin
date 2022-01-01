@@ -1,22 +1,26 @@
 /* Imports *****************************************************************************************************************************************/
 import joplin from 'api';
-import path = require('path');
-import { getTodos, openTodo, toggleTodoCompletion as toggleTodoCompletion } from './joplin';
+import { connectNoteChangedCallback, getTodos, openTodo, toggleTodoCompletion as toggleTodoCompletion } from './joplin';
 import { groupBy } from "./misc"
-
-
 const fs = joplin.require('fs-extra');
+
+
+var HTMLFilePath = null;
+var BaseHTML = null
 var panel = null;
 var formatterList = {
     'date': getDateFormat,
     'interval': getIntervalFormat
 }
+var updateNeeded = false;
 
 
 /** setupPanel **************************************************************************************************************************************
  * Sets up the panel                                                                                                                                *
  ****************************************************************************************************************************************************/
 export async function createPanel(){
+    HTMLFilePath = (await joplin.plugins.installationDir()) + "/gui/panel/panel.html"
+    BaseHTML = await fs.readFile(HTMLFilePath, 'utf8');
     panel = await joplin.views.panels.create('panel')
     await joplin.views.dialogs.addScript(panel, 'gui/panel/panel.js')
     await joplin.views.dialogs.addScript(panel, 'gui/panel/panel.css')
@@ -30,29 +34,41 @@ export async function createPanel(){
     })
 }
 
+export async function setupPanelUpdatePolling(){
+    async function tripFlag(event?){
+        updateNeeded = true;
+    }
+    async function pollForUpdates(){
+        if (updateNeeded){
+            updatePanelData()
+            updateNeeded = false;
+        }    
+    }
+    await connectNoteChangedCallback(tripFlag)
+    setInterval(pollForUpdates, 100)
+}
+
 /** updatePanelData *********************************************************************************************************************************
  * Displays all todos in the panel, grouped by date and sorted by time                                                                              *
  ***************************************************************************************************************************************************/
-export async function updatePanelData(){  
+export async function updatePanelData(event?){
+    if (event) {
+        console.log(event)
+    }
     var visibility = await joplin.settings.value('agendaPanelVisibility')
     var showCompleted = await joplin.settings.value("agendaShowCompletedTodos")
     var showNoDue = await joplin.settings.value("agendaShowNoDueDateTodos")
     var format = await joplin.settings.value("agendaPanelFormat")
+    var searchCriteria = await joplin.settings.value("agendaSearchCritera")
     await joplin.views.panels.show(panel, visibility) 
     if (visibility){
-        var todoList = await getTodos(showCompleted, showNoDue)
+        var todoList = await getTodos(showCompleted, showNoDue, searchCriteria)
         var formatter = formatterList[format]
         var formattedTodosHTML = await formatter(todoList)
-        const HTMLFilePath = (await joplin.plugins.installationDir()) + "/gui/panel/panel.html"
-        const BaseHTML = await fs.readFile(HTMLFilePath, 'utf8');
         var replacedHTML = BaseHTML.replace("<<TODOS>>", formattedTodosHTML)
         await joplin.views.panels.setHtml(panel, replacedHTML);
     }
 }
-
-
-
-
 
 export async function getDateFormat(todoList){
     var formattedHTML = ""
@@ -137,7 +153,7 @@ export async function getIntervalFormat(todoList){
     for (var dateGroup of todoArray){
         formattedHTML = formattedHTML.concat(`<h2 class="agendaDate">${dateGroup[0]}</h2>`)    
         for (var todo of dateGroup[1]){
-            var dueDate = todo.todo_due != 0 ? `${getDate(todo.todo_due)} - ${getTime(todo.todo_due)}` : ""
+            var dueDate = todo.todo_due != 0 && dateGroup[0] == "Today" ? `${getDate(todo.todo_due)} - ${getTime(todo.todo_due)}` : ""
             var checkedString = todo.todo_completed != 0 ? "checked" : ""
             var todoHTMLString = `
                 <p class="agendaTodo">
