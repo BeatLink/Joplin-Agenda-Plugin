@@ -45,7 +45,7 @@ export async function setupPanelUpdatePolling(){
         }    
     }
     await connectNoteChangedCallback(tripFlag)
-    setInterval(pollForUpdates, 100)
+    setInterval(pollForUpdates, 1000)
 }
 
 /** updatePanelData *********************************************************************************************************************************
