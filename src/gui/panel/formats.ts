@@ -1,4 +1,4 @@
-import { groupBy } from "../../Logic/misc"
+import { groupBy } from "../../logic/misc"
 
 
 export var formatterList = {

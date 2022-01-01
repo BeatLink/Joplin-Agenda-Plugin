@@ -1,7 +1,7 @@
 /* Imports *****************************************************************************************************************************************/
 import joplin from 'api';
 import {MenuItemLocation, SettingItemType, ToolbarButtonLocation } from 'api/types';
-import { connectNoteChangedCallback, getTodos, openTodo, toggleTodoCompletion as toggleTodoCompletion } from '../../Logic/joplin';
+import { connectNoteChangedCallback, getTodos, openTodo, toggleTodoCompletion as toggleTodoCompletion } from '../../logic/joplin';
 import { formatterList } from './formats';
 
 var panel = null;
