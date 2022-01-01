@@ -2,6 +2,7 @@
 import joplin from 'api';
 import {MenuItemLocation, SettingItemType, ToolbarButtonLocation } from 'api/types';
 import { connectNoteChangedCallback, getTodos, openTodo, toggleTodoCompletion as toggleTodoCompletion } from '../../Logic/joplin';
+import { formatterList } from './formats';
 
 var panel = null;
 
@@ -67,7 +68,19 @@ async function setupSettings(){
             value: true,
             public: true,
             section: "agendaSettingsSection"
-        }
+        },
+        "agendaPanelFormat": {
+            label: "Panel Format",
+            type: SettingItemType.String,
+            isEnum: true,
+            options: {
+                "date": 'Date', 
+                "interval": "Interval"
+            },
+            value: "date",
+            public: true,
+            section: "agendaSettingsSection"
+        },
     })
 }
 
@@ -132,25 +145,12 @@ export async function updatePanelData(){
     var visibility = await joplin.settings.value('agendaPanelVisibility')
     await joplin.views.panels.show(panel, visibility) 
     if (visibility){
-        var allTodosHTMLString = ""
-        var allTodos = (await getTodos()).entries()
-        for (var date of allTodos){
-            allTodosHTMLString = allTodosHTMLString.concat(`<h2 class="agendaDate">${date[0]}</h2>`)    
-            for (var todo of date[1]){
-                var dueDate = new Date(todo.todo_due)
-                var dueString = todo.todo_due != 0 ? dueDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}).concat(" - ") : ""
-                var checkedString = todo.todo_completed != 0 ? "checked" : "" 
-                var todoHTMLString = `
-                    <p class="agendaTodo">
-                        <input class="agendaTodoCheckbox" type="checkbox" onchange="onTodoChecked('${todo.id}')" ${checkedString}>
-                        <a class="agendaTodoLabel" href="#" onclick="onTodoClicked('${todo.id}')">${dueString} ${todo.title}</a>
-                    </p>
-                `
-                allTodosHTMLString = allTodosHTMLString.concat(todoHTMLString)    
-            }
-        }
+        var format = await joplin.settings.value("agendaPanelFormat")
+        var formatter = formatterList[format]
+        console.log(formatter)
+        var formattedTodosHTML = await formatter(await getTodos())
         const BaseHTML = await require('./Panel.html').default;
-        var replacedHTML = BaseHTML.replace("<<TODOS>>", allTodosHTMLString)
+        var replacedHTML = BaseHTML.replace("<<TODOS>>", formattedTodosHTML)
         await joplin.views.panels.setHtml(panel, replacedHTML);
     }
 }
