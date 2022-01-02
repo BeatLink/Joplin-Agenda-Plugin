@@ -1,6 +1,7 @@
 import joplin from "api"
 import { SettingItemType } from "api/types"
-import { updatePanelData } from "./panel"
+import { updatePanelData } from "../gui/panel"
+import { loadDateSettings } from "./date-formats"
 
 /** setupSettings ***********************************************************************************************************************************
  * Registers the settings for the plugin                                                                                                            *
@@ -52,6 +53,74 @@ export async function setupSettings(){
             public: true,
             section: "agendaSettingsSection"
         },
+        "agendaDateYearFormat": {
+            label: "Date Format (Year)",
+            type: SettingItemType.String,
+            isEnum: true,
+            options: {
+                "numeric": '2022', 
+                "2-digit": "22"
+            },
+            value: "numeric",
+            public: true,
+            section: "agendaSettingsSection"
+        },
+
+        "agendaDateMonthFormat": {
+            label: "Date Format (Month)",
+            type: SettingItemType.String,
+            isEnum: true,
+            options: {
+                "numeric": '1', 
+                "2-digit": "01",
+                "long": "January",
+                "short": "Jan",
+                "narrow": ""
+            },
+            value: "numeric",
+            public: true,
+            section: "agendaSettingsSection"
+        },
+        "agendaDateDayFormat": {
+            label: "Date Format (Day)",
+            type: SettingItemType.String,
+            isEnum: true,
+            options: {
+                "numeric": '1', 
+                "2-digit": "01",
+            },
+            value: "numeric",
+            public: true,
+            section: "agendaSettingsSection"
+        },
+        "agendaDateWeekdayFormat": {
+            label: "Weekday Format",
+            type: SettingItemType.String,
+            isEnum: true,
+            options: {
+                'long': 'Monday', 
+                'short': "Mon",
+                'narrow': "M",
+            },
+            value: 'long',
+            public: true,
+            section: "agendaSettingsSection"
+        },
+        "agendaTimeFormat": {
+            label: "Time Format",
+            type: SettingItemType.Bool,
+            isEnum: true,
+            options: {
+                true: 'AM/PM', 
+                false: "24 Hours",
+            },
+            value: false,
+            public: true,
+            section: "agendaSettingsSection"
+        },
+
     })
     joplin.settings.onChange(updatePanelData)
+    joplin.settings.onChange(loadDateSettings)
+
 }

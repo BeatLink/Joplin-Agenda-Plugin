@@ -1,4 +1,4 @@
-#agendaBody {
+body {
     padding: 1em;
     overflow: scroll;
     height: 100vh;
@@ -6,18 +6,17 @@
     border-right: 1px solid #bbbbbb;
 }
 
-#agendaHeading {
+h1 {
     margin: 0;
     padding: 0;
 }
 
 
-.agendaDate {
+h2 {
     margin-top: 2em;
-
 }
 
-.agendaTodoLabel { 
+a { 
     color: inherit; 
     text-decoration: none;
 } 

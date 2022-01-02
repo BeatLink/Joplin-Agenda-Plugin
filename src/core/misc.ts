@@ -1,3 +1,5 @@
+import joplin from "api";
+
 /** groupBy *****************************************************************************************************************************************
  * @description                                                                                                                                     *
  * Takes an Array<V>, and a grouping function,                                                                                                      *
@@ -22,3 +24,5 @@ export function groupBy(list, keyGetter) {
     });
     return map;
 }
+
+

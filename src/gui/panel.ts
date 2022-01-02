@@ -1,7 +1,8 @@
 /* Imports *****************************************************************************************************************************************/
 import joplin from 'api';
-import { connectNoteChangedCallback, getTodos, openTodo, toggleTodoCompletion as toggleTodoCompletion } from './joplin';
-import { groupBy } from "./misc"
+import { getDateString, getFullDateString, getTimeString, getWeekdayString } from '../core/date-formats';
+import { connectNoteChangedCallback, getTodos, openTodo, toggleTodoCompletion as toggleTodoCompletion } from '../core/joplin';
+import { groupBy } from "../core/misc"
 const fs = joplin.require('fs-extra');
 
 
@@ -72,20 +73,11 @@ export async function updatePanelData(event?){
 
 export async function getDateFormat(todoList){
     var formattedHTML = ""
-    function dateGrouping(todo){
-        return todo.todo_due != 0 ? getDate(todo.todo_due) : "No Due Date"
-    }
-    function getDate(date){
-        return new Date(date).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
-    }
-    function getTime(date){
-        return new Date(todo.todo_due).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}).concat(" - ")
-    }
-    var todoArray = groupBy(todoList, dateGrouping)
+    var todoArray = groupBy(todoList, (todo) => { return todo.todo_due != 0 ? getFullDateString(todo.todo_due) : "No Due Date" })
     for (var dateGroup of todoArray){
         formattedHTML = formattedHTML.concat(`<h2 class="agendaDate">${dateGroup[0]}</h2>`)    
         for (var todo of dateGroup[1]){
-            var dueTime = todo.todo_due != 0 ? getTime(todo.todo_due) : ""
+            var dueTime = todo.todo_due != 0 ? getTimeString(todo.todo_due) : ""
             var checkedString = todo.todo_completed != 0 ? "checked" : ""
             var todoHTMLString = `
                 <p class="agendaTodo">
@@ -103,14 +95,14 @@ export async function getIntervalFormat(todoList){
     var formattedHTML = ""
 
     var startOfToday = new Date()
-    startOfToday.setUTCHours(0,0,0,0);
+    startOfToday.setHours(0,0,0,0);
 
     var endOfToday = new Date();
-    endOfToday.setUTCHours(23,59,59,999);
+    endOfToday.setHours(23,59,59,999);
 
     var endOfWeek = new Date()
     endOfWeek.setDate(endOfWeek.getDate() - (endOfWeek.getDay() - 1) + 6);
-    endOfWeek.setUTCHours(23,59,59,999);
+    endOfWeek.setHours(23,59,59,999);
 
 
     var endOfMonth = new Date()
@@ -141,20 +133,21 @@ export async function getIntervalFormat(todoList){
         return "Future"
     }
 
-    function getDate(date){
-        return new Date(date).toLocaleDateString(undefined, { year: 'numeric', month: 'numeric', day: 'numeric' })
-    }
-
-    function getTime(date){
-        return new Date(todo.todo_due).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}).concat(" - ")
-    }
-
     var todoArray = groupBy(todoList, intervalGrouping)
     for (var dateGroup of todoArray){
-        formattedHTML = formattedHTML.concat(`<h2 class="agendaDate">${dateGroup[0]}</h2>`)    
+        formattedHTML = formattedHTML.concat(`<h2>${dateGroup[0]}</h2>`)    
         for (var todo of dateGroup[1]){
-            var dueDate = todo.todo_due != 0 && dateGroup[0] == "Today" ? `${getDate(todo.todo_due)} - ${getTime(todo.todo_due)}` : ""
-            var checkedString = todo.todo_completed != 0 ? "checked" : ""
+            var dateFormats = {
+                "No Due Date": ``,
+                "Overdue": `${getFullDateString(todo.todo_due)} - `,
+                "Today": `${getTimeString(todo.todo_due)} - `,
+                "This Week": `${getWeekdayString(todo.todo_due)} - `,
+                "This Month": `${getDateString(todo.todo_due)} - `,
+                "This Year": `${getDateString(todo.todo_due)} - `,
+                "Future": `${getFullDateString(todo.todo_due)} - `,
+            }    
+            var checkedString = todo.todo_completed ? "checked" : "" 
+            var dueDate = dateFormats[dateGroup[0]]
             var todoHTMLString = `
                 <p class="agendaTodo">
                     <input type="checkbox" onchange="onTodoChecked('${todo.id}')" ${checkedString}>
