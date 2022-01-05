@@ -16,7 +16,12 @@ h2 {
     margin-top: 2em;
 }
 
-a { 
+p {
+    padding: 0.5em;
+    margin: 0em;
+}
+
+a {
     color: inherit; 
     text-decoration: none;
 } 

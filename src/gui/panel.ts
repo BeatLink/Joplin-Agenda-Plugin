@@ -149,7 +149,7 @@ export async function getIntervalFormat(todoList){
             var checkedString = todo.todo_completed ? "checked" : "" 
             var dueDate = dateFormats[dateGroup[0]]
             var todoHTMLString = `
-                <p class="agendaTodo">
+                <p>
                     <input type="checkbox" onchange="onTodoChecked('${todo.id}')" ${checkedString}>
                     <a onclick="onTodoClicked('${todo.id}')">${dueDate}${todo.title}</a>
                 </p>
