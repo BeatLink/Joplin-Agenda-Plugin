@@ -42,7 +42,7 @@ export async function setupSettings(){
                 "date": 'Date', 
                 "interval": "Interval"
             },
-            value: "date",
+            value: "interval",
             public: true,
             section: "agendaSettingsSection"
         },
