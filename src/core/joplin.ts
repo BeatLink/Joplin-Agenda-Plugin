@@ -6,7 +6,7 @@ import joplin from "api";
  ***************************************************************************************************************************************************/
 export async function getTodos(showCompleted, showNoDue, searchCritera){
     const completed = showCompleted ? "" : "iscompleted:0"
-    const noDue = showNoDue ? "" : "due:19700101"
+    const noDue = showNoDue ? "" : "due:19700201"
     var allTodos = [];
     let pageNum = 0;
     do {
