@@ -41,7 +41,7 @@ export async function setupPanelUpdatePolling(){
     }
     async function pollForUpdates(){
         if (updateNeeded){
-            updatePanelData()
+            await updatePanelData()
             updateNeeded = false;
         }    
     }

@@ -22,4 +22,5 @@ joplin.plugins.register({
     await createPanel()
     await updatePanelData()
     await setupPanelUpdatePolling()
+    await joplin.workspace.onNoteChange(updatePanelData)
 }

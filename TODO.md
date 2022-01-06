@@ -1,7 +1,6 @@
 # To Do
 
 ## Features
-- Add Sync Button
 - Add Page updating for use on mobile
 - Add multiple profile mode
 
