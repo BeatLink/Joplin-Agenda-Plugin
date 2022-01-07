@@ -3,7 +3,7 @@ import joplin from 'api';
 import { setupControls } from './gui/controls';
 import { createPanel, setupPanelUpdatePolling, updatePanelData } from './gui/panel';
 import { setupSettings } from './core/settings';
-import { loadDateSettings } from './core/date-formats';
+import { loadDateSettings } from './core/dates';
 
 /** Plugin Registration *****************************************************************************************************************************
  * Registers the plugin with joplin.                                                                                                                *

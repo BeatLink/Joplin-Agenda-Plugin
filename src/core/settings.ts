@@ -1,7 +1,7 @@
 import joplin from "api"
 import { SettingItemType } from "api/types"
 import { updatePanelData } from "../gui/panel"
-import { loadDateSettings } from "./date-formats"
+import { loadDateSettings } from "./dates"
 
 /** setupSettings ***********************************************************************************************************************************
  * Registers the settings for the plugin                                                                                                            *

@@ -1,8 +1,8 @@
 /* Imports *****************************************************************************************************************************************/
 import joplin from 'api';
-import { getDateString, getFullDateString, getTimeString, getWeekdayString } from '../core/date-formats';
+import { getDateString, getFullDateString, getTimeString, getWeekdayString } from '../core/dates';
 import { connectNoteChangedCallback, getTodos, openTodo, toggleTodoCompletion as toggleTodoCompletion } from '../core/joplin';
-import { groupBy } from "../core/misc"
+import { groupBy } from "../misc/groupby"
 const fs = joplin.require('fs-extra');
 
 
@@ -71,92 +71,3 @@ export async function updatePanelData(event?){
     }
 }
 
-export async function getDateFormat(todoList){
-    var formattedHTML = ""
-    var todoArray = groupBy(todoList, (todo) => { return todo.todo_due != 0 ? getFullDateString(todo.todo_due) : "No Due Date" })
-    for (var dateGroup of todoArray){
-        formattedHTML = formattedHTML.concat(`<h2 class="agendaDate">${dateGroup[0]}</h2>`)    
-        for (var todo of dateGroup[1]){
-            var dueTime = todo.todo_due != 0 ? getTimeString(todo.todo_due) : ""
-            var checkedString = todo.todo_completed != 0 ? "checked" : ""
-            var todoHTMLString = `
-                <p class="agendaTodo">
-                    <input type="checkbox" onchange="onTodoChecked('${todo.id}')" ${checkedString}>
-                    <a onclick="onTodoClicked('${todo.id}')">${dueTime} ${todo.title}</a>
-                </p>
-            `
-            formattedHTML = formattedHTML.concat(todoHTMLString)    
-        }
-    }
-    return formattedHTML
-}
-
-export async function getIntervalFormat(todoList){
-    var formattedHTML = ""
-
-    var startOfToday = new Date()
-    startOfToday.setHours(0,0,0,0);
-
-    var endOfToday = new Date();
-    endOfToday.setHours(23,59,59,999);
-
-    var endOfWeek = new Date()
-    endOfWeek.setDate(endOfWeek.getDate() - (endOfWeek.getDay() - 1) + 6);
-    endOfWeek.setHours(23,59,59,999);
-
-
-    var endOfMonth = new Date()
-    endOfMonth = new Date(endOfMonth.getFullYear(), endOfMonth.getMonth() + 1, 0);
-
-    var endOfYear = new Date(new Date().getFullYear(), 11, 31)
-
-    function intervalGrouping(todo){
-        var todoDate =  new Date(todo.todo_due)
-        if (todo.todo_due == 0){
-            return "No Due Date"
-        }
-        if (todoDate < startOfToday){
-            return "Overdue"
-        } 
-        if (todoDate < endOfToday){
-            return "Today"
-        }
-        if (todoDate < endOfWeek){
-            return "This Week"
-        }
-        if (todoDate < endOfMonth){
-            return "This Month"
-        }
-        if (todoDate < endOfYear){
-            return "This Year"
-        }
-        return "Future"
-    }
-
-    var todoArray = groupBy(todoList, intervalGrouping)
-    for (var dateGroup of todoArray){
-        formattedHTML = formattedHTML.concat(`<h2>${dateGroup[0]}</h2>`)    
-        for (var todo of dateGroup[1]){
-            var dateFormats = {
-                "No Due Date": ``,
-                "Overdue": `${getFullDateString(todo.todo_due)} - `,
-                "Today": `${getTimeString(todo.todo_due)} - `,
-                "This Week": `${getWeekdayString(todo.todo_due)} - `,
-                "This Month": `${getDateString(todo.todo_due)} - `,
-                "This Year": `${getDateString(todo.todo_due)} - `,
-                "Future": `${getFullDateString(todo.todo_due)} - `,
-            }    
-            var checkedString = todo.todo_completed ? "checked" : "" 
-            var dueDate = dateFormats[dateGroup[0]]
-            var todoHTMLString = `
-                <p>
-                    <input type="checkbox" onchange="onTodoChecked('${todo.id}')" ${checkedString}>
-                    <a onclick="onTodoClicked('${todo.id}')">${dueDate}${todo.title}</a>
-                </p>
-            `
-            formattedHTML = formattedHTML.concat(todoHTMLString)    
-        }
-    }
-    return formattedHTML
-    
-}
