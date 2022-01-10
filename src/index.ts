@@ -1,9 +1,7 @@
 /** Imports *****************************************************************************************************************************************/
 import joplin from 'api';
-import { setupControls } from './gui/controls';
-import { createPanel, setupPanelUpdatePolling, updatePanelData } from './gui/panel';
-import { setupSettings } from './core/settings';
-import { loadDateSettings } from './core/dates';
+import { updateInterfaces } from './logic/updater';
+import { setupDatabase } from './storage/database/common';
 
 /** Plugin Registration *****************************************************************************************************************************
  * Registers the plugin with joplin.                                                                                                                *
@@ -16,11 +14,6 @@ joplin.plugins.register({
  * Runs all functions to initialize the plugin                                                                                                      *
  ****************************************************************************************************************************************************/
  export async function setupPlugin(){
-    await setupSettings()
-    await loadDateSettings()
-    await setupControls()
-    await createPanel()
-    await updatePanelData()
-    await setupPanelUpdatePolling()
-    await joplin.workspace.onNoteChange(updatePanelData)
+    await setupDatabase()
+    await updateInterfaces()
 }
