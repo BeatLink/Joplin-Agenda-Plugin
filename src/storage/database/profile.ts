@@ -1,37 +1,15 @@
-/** README ******************************************************************************************************************************************
- * This file contains all functions involved in managing the agenda profile database.                                                               *
- * This sqlite3 database is stored in the plugin directory and holds all of the settings for each agenda profile.                                   *
- ***************************************************************************************************************************************************/
-
-/** Imports ****************************************************************************************************************************************/
-import joplin from "api";
-const fs = joplin.require('fs-extra')
-const sqlite3 = joplin.require('sqlite3')
-
-/** Variable setup *********************************************************************************************************************************/
-var databasePath = null
-var database = null
-
-/** setupDatabase ***********************************************************************************************************************************
- * Runs the code required for database initialization and record updates. This should run at  program start.                                        *
- ***************************************************************************************************************************************************/
-export async function setupDatabase(){
-    var pluginDir = await joplin.plugins.dataDir()
-    databasePath = pluginDir + "/database.sqlite3"
-    await fs.ensureDir(pluginDir)
-    database = new sqlite3.Database(databasePath)
-    await createTable()
-}
+import { runQuery } from "./common";
 
 /** createTable *************************************************************************************************************************************
  * Creates the database table if it doesnt exist                                                                                                    *
  ***************************************************************************************************************************************************/
-async function createTable(){
+export async function createTable(){
     var createQuery = `
         CREATE TABLE IF NOT EXISTS Profile (
             id TEXT PRIMARY KEY,
             name TEXT,
             searchCriteria TEXT,
+            noteID TEXT,
             showCompleted BOOLEAN,
             showNoDue BOOLEAN,
             displayFormat TEXT,
@@ -78,6 +56,7 @@ export async function updateRecord(id: string, profile:Profile){
         SET
             name = $name
             searchCriteria = $searchCriteria
+            noteID = $noteID
             showCompleted = $showCompleted
             showNoDue = $showNoDue
             displayFormat = $displayFormat
@@ -92,6 +71,7 @@ export async function updateRecord(id: string, profile:Profile){
         $id: id,
         $name: profile.name,
         $searchCriteria: profile.searchCriteria,
+        $noteID: profile.noteID,
         $showCompleted: profile.showCompleted,
         $showNoDue: profile.showNoDue,
         $displayFormat: profile.displayFormat,
@@ -119,6 +99,7 @@ function getRecordAsProfile(record): Profile{
         var profile = new Profile()
         profile.name = record.name
         profile.searchCriteria = record.searchCriteria
+        profile.noteID = record.noteID
         profile.showCompleted = record.showCompleted
         profile.showNoDue = record.showNoDue
         profile.displayFormat = record.displayFormat
@@ -129,16 +110,4 @@ function getRecordAsProfile(record): Profile{
         profile.timeIs24hr = record.timeIs24hr    
         return profile
     }
-}
-
-/** runQuery ****************************************************************************************************************************************
- * Sqlite3 does not support async/await functionality, thus the need for this promise based function to run the sqlite functions. If there are      *
- * better ways to do this, please let me know                                                                                                       *
- ***************************************************************************************************************************************************/
- async function runQuery(func, SQLQuery, parameters): Promise<any>{
-    return await new Promise(
-        (resolve, reject) => {
-            database[func](SQLQuery, parameters, (err, row) => { err ? reject(err) : resolve(row) })
-        }
-    )
 }
