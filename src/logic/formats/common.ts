@@ -23,38 +23,60 @@ export abstract class BaseFormat {
      ***********************************************************************************************************************************************/
     protected profile = null
 
-    protected abstract getFormattedHeadingString(todo): string   
+    /** outputFormat ********************************************************************************************************************************
+     * This stores the output format that the todos are requested in. Valid values are "html" and "markdown"                                        *
+     ***********************************************************************************************************************************************/
+    private outputFormat = null
+
+    /** getFormattedHeadingString *******************************************************************************************************************
+     * This method should return the heading string that the given todo would fall under. All formats must implement this method.                   *
+     ***********************************************************************************************************************************************/
+    protected abstract getFormatHeadingString(todo): string
     
-    protected abstract getFormattedTodoString(todo, heading): string
+    /** getFormattedTodoString **********************************************************************************************************************
+     * This method should return the string representation of the given todo and heading. All formats must implement this method                    *
+     ***********************************************************************************************************************************************/
+    protected abstract getFormatTodoString(todo, heading): string
     
-    public async getTodos(mode){
-        var finalString = ""
+    /** getTodos ************************************************************************************************************************************
+     * This is the main method of this class. It returns the formatted list of todos according to the profile parameters passed at class            *
+     * initialization and the given output format, whether it be "html" or "markdown"                                                               *
+     ***********************************************************************************************************************************************/
+    public async getTodos(outputFormat){
+        this.outputFormat = outputFormat
+        var todoString = ""
         var todoList = await getTodos(this.profile.showCompleted, this.profile.showNoDue, this.profile.searchCriteria)
-        var todoMap = this.groupBy(todoList, this.getFormattedHeadingString)
-        console.log(todoMap)
-        for (var dateGroup of todoMap){
-            finalString = finalString.concat(this.getHeadingString(dateGroup[0], mode))    
-            for (var todo of dateGroup[1]){
-                finalString = finalString.concat(this.getTodoString(todo, dateGroup[0], mode))    
+        var todoMap = this.groupBy(todoList, this.getFormatHeadingString)
+        for (var headingGroup of todoMap){
+            var heading = headingGroup[0]
+            todoString += this.getHeadingString(heading)
+            for (var todo of headingGroup[1]){
+                todoString += this.getTodoString(todo, heading) 
             }
         }
-        return finalString
+        return todoString
     }
     
-    private getHeadingString(headingString, mode){
-        if (mode == "markdown"){
+    /** getHeadingString ****************************************************************************************************************************
+     * This returns the given heading string with the proper output format(i.e html or markdown)                                                    *
+     ***********************************************************************************************************************************************/
+    private getHeadingString(headingString){
+        if (this.outputFormat == "markdown"){
             return `## ${headingString}`    
-        } else if (mode == "html") {
+        } else if (this.outputFormat == "html") {
             return `<h2>${headingString}</h2>`; 
         }
     }
     
-    private getTodoString(todo, heading, mode){
-        var todoString = this.getFormattedTodoString(todo, heading)
-        if (mode == "markdown"){
+    /** getTodoString *******************************************************************************************************************************
+     * This returns the given todo as a string, with the proper output format (i.e html or markdown.)                                               *
+     ***********************************************************************************************************************************************/
+    private getTodoString(todo, heading){
+        var todoString = this.getFormatTodoString(todo, heading)
+        if (this.outputFormat == "markdown"){
             var checkedString = todo.todo_completed ? "x" : "" 
             return `- [${checkedString}] [${todoString}](:/${todo.id})`    
-        } else if (mode == "html") {
+        } else if (this.outputFormat == "html") {
             var checkedString = todo.todo_completed ? "checked" : "" 
             return `
                 <p>
@@ -65,7 +87,7 @@ export abstract class BaseFormat {
         }
     }
     /** groupBy *****************************************************************************************************************************************
-     * Takes an array, and a grouping function, and returns a Map of the array grouped by the grouping function.                                     *
+     * Takes an array, and a grouping function, and returns a Map of the array grouped by the grouping function.                                        *
      * Source: https://stackoverflow.com/a/38327540                                                                                                     *
      ***************************************************************************************************************************************************/
     private groupBy(list, keyGetter) {
@@ -84,6 +106,7 @@ export abstract class BaseFormat {
 
     /** getWeekdayString ********************************************************************************************************************************
      * Takes the given date and returns a string representing the weekday the date falls on.                                                            *
+     * Provided as convenience for use in custom formats                                                                                                *
      ***************************************************************************************************************************************************/
     protected getWeekdayString(date){
         return new Date(date).toLocaleDateString(undefined, {
@@ -92,7 +115,8 @@ export abstract class BaseFormat {
     }
 
     /** getFullDateString *******************************************************************************************************************************
-     * Takes the given date and returns a string representing the full date, including year, month and day                                              *
+     * Takes the given date and returns a string representing the full date, including year, month and day.                                             *
+     * Provided as convenience for use in custom formats                                                                                                *
      ***************************************************************************************************************************************************/
     protected getFullDateString(date){
         return new Date(date).toLocaleDateString(undefined, {
@@ -104,6 +128,7 @@ export abstract class BaseFormat {
 
     /** getDateString ***********************************************************************************************************************************
      * Takes the given date and returns a string representing the date without the year                                                                 *
+     * Provided as convenience for use in custom formats                                                                                                *
      ***************************************************************************************************************************************************/
     protected getDateString(date){
         return new Date(date).toLocaleDateString(undefined, {
@@ -114,6 +139,7 @@ export abstract class BaseFormat {
 
     /** getTimeString ***********************************************************************************************************************************
      * Takes the given date and returns a string representing the time                                                                                  *
+     * Provided as convenience for use in custom formats                                                                                                *
      ***************************************************************************************************************************************************/
     protected getTimeString(date){
         return new Date(date).toLocaleTimeString(undefined, {
@@ -125,7 +151,7 @@ export abstract class BaseFormat {
 
 
     /** getStartOfToday *********************************************************************************************************************************
-     * Gets the date representing the start of the current day. Used for comparison.                                                                    *
+     * Gets the date representing the start of the current day. Provided as convenience for use in custom formats.                                      *                                                                    *
      ***************************************************************************************************************************************************/
     protected getStartOfToday(){
         var startOfToday = new Date()
@@ -134,7 +160,7 @@ export abstract class BaseFormat {
     }
 
     /** getEndOfToday ***********************************************************************************************************************************
-     * Gets the date representing the end of the current day. Used for comparison.                                                                      *
+     * Gets the date representing the end of the current day. Provided as convenience for use in custom formats                                         *                            *
      ***************************************************************************************************************************************************/
     protected getEndOfToday(){
         var endOfToday = new Date();
@@ -143,7 +169,7 @@ export abstract class BaseFormat {
     }
 
     /** getEndOfThisWeek ********************************************************************************************************************************
-     * Gets the date representing the end of the current week. Used for comparison.                                                                     *
+     * Gets the date representing the end of the current week. Provided as convenience for use in custom formats                                        *                            *
      ***************************************************************************************************************************************************/
     protected getEndOfThisWeek(){
         var endOfWeek = new Date()
@@ -153,7 +179,7 @@ export abstract class BaseFormat {
     }
 
     /** getEndOfThisMonth *******************************************************************************************************************************
-     * Gets the date representing the end of the current month. Used for comparison.                                                                    *
+     * Gets the date representing the end of the current month. Provided as convenience for use in custom formats                                       *                            *
      ***************************************************************************************************************************************************/
     protected getEndOfThisMonth(){
         var endOfMonth = new Date()
@@ -162,7 +188,7 @@ export abstract class BaseFormat {
     }
 
     /** getEndOfThisYear ********************************************************************************************************************************
-     * Gets the date representing the end of the current year. Used for comparison.                                                                     *
+     * Gets the date representing the end of the current year. Provided as convenience for use in custom formats                                        *                            *
      ***************************************************************************************************************************************************/
     protected getEndOfThisYear(){
         var endOfYear = new Date(new Date().getFullYear(), 11, 31) 

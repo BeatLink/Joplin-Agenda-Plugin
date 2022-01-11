@@ -2,7 +2,7 @@ import { BaseFormat } from "./common"
 
 export class DateFormat extends BaseFormat {
 
-    protected getFormattedHeadingString(todo){
+    protected getFormatHeadingString(todo){
         if (todo.todo_due != 0) {
             return this.getFullDateString(todo.todo_due)
         } else {
@@ -10,7 +10,7 @@ export class DateFormat extends BaseFormat {
         } 
     }
 
-    protected getFormattedTodoString(todo, heading){
+    protected getFormatTodoString(todo, heading){
         var dueTime = todo.todo_due != 0 ? `${this.getTimeString(todo.todo_due)} - ` : ""
         return `${dueTime}${todo.title}`
     }

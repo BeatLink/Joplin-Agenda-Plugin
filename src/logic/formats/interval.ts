@@ -5,7 +5,7 @@ import { BaseFormat } from "./common"
  ***************************************************************************************************************************************************/
  export class IntervalFormat extends BaseFormat {
 
-    protected getFormattedHeadingString(todo){
+    protected getFormatHeadingString(todo){
         var heading = ""       
         var todoDate =  new Date(todo.todo_due)
         if (todo.todo_due == 0){
@@ -26,7 +26,7 @@ import { BaseFormat } from "./common"
         return heading
     }
 
-    protected getFormattedTodoString(todo, heading){
+    protected getFormatTodoString(todo, heading){
         var dueDate = ""
         if (heading == "Overdue") {
             dueDate = `${this.getFullDateString(todo.todo_due)} - `

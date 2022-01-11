@@ -11,7 +11,6 @@ import joplin from "api";
 import { updatePanelData } from "../ui/panel/panel";
 import { formats } from "./formats/common";
 import { connectNoteChangedCallback } from "./joplin/events";
-import { getTodos } from "./joplin/todos";
 import { Profile } from "./profile";
 
 /** Variable Initialization ************************************************************************************************************************/

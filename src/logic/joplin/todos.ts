@@ -21,7 +21,7 @@ import { updateInterfaces } from '../updater';
                 order_by: 'todo_due',
                 page: pageNum++,
             })
-        allTodos = allTodos.concat(response.items)
+        allTodos += response.items
     } while (response.has_more)
     return allTodos
 }
