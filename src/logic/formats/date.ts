@@ -1,13 +1,17 @@
-import { getFullDateString, getTimeString } from "./common/misc/date_functions"
+import { BaseFormat } from "./common"
 
 export class DateFormat extends BaseFormat {
 
-    protected getFormattedHeadingString(todo, profile){
-        return todo.todo_due != 0 ? getFullDateString(todo.todo_due, profile.yearFormat, profile.monthFormat, profile.dayFormat) : "No Due Date"
+    protected getFormattedHeadingString(todo){
+        if (todo.todo_due != 0) {
+            return this.getFullDateString(todo.todo_due)
+        } else {
+            return "No Due Date"
+        } 
     }
 
-    protected getFormattedTodoString(todo, heading, profile){
-        var dueTime = todo.todo_due != 0 ? `${getTimeString(todo.todo_due, profile.hourFormat, profile.minuteFormat, profile.timeIs12Hour)} - ` : ""
+    protected getFormattedTodoString(todo, heading){
+        var dueTime = todo.todo_due != 0 ? `${this.getTimeString(todo.todo_due)} - ` : ""
         return `${dueTime}${todo.title}`
     }
 }

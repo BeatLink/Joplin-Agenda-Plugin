@@ -1,8 +1,8 @@
-import { getDateString, getEndOfThisMonth, getEndOfThisWeek, getEndOfThisYear, getEndOfToday, getFullDateString, getStartOfToday, getTimeString, getWeekdayString } from "./common/misc/date_functions"
+import { BaseFormat } from "./common"
 
-/**
- * 
- */
+/** IntervalFormat **********************************************************************************************************************************
+ * This format groups todos by specific dates then names the todo according to the due time on that date                                            *
+ ***************************************************************************************************************************************************/
  export class IntervalFormat extends BaseFormat {
 
     protected getFormattedHeadingString(todo){
@@ -10,15 +10,15 @@ import { getDateString, getEndOfThisMonth, getEndOfThisWeek, getEndOfThisYear, g
         var todoDate =  new Date(todo.todo_due)
         if (todo.todo_due == 0){
             heading = "No Due Date"
-        } else if (todoDate < getStartOfToday()){
+        } else if (todoDate < this.getStartOfToday()){
             heading = "Overdue"
-        } else if (todoDate < getEndOfToday()){
+        } else if (todoDate < this.getEndOfToday()){
             heading = "Today"
-        } else if (todoDate < getEndOfThisWeek()){
+        } else if (todoDate < this.getEndOfThisWeek()){
             heading = "This Week"
-        } else if (todoDate < getEndOfThisMonth()){
+        } else if (todoDate < this.getEndOfThisMonth()){
             heading = "This Month"
-        } else if (todoDate < getEndOfThisYear()){
+        } else if (todoDate < this.getEndOfThisYear()){
             heading = "This Year"
         } else {
             heading = "Future"
@@ -26,24 +26,21 @@ import { getDateString, getEndOfThisMonth, getEndOfThisWeek, getEndOfThisYear, g
         return heading
     }
 
-    protected getFormattedTodoString(todo, heading, profile){
+    protected getFormattedTodoString(todo, heading){
         var dueDate = ""
-        if (heading == "No Due Date"){
-            dueDate = ``
-        } else if (heading == "Overdue") {
-            dueDate = `${getFullDateString(todo.todo_due, profile.yearFormat, profile.monthFormat, profile.dayFormat)} - `
+        if (heading == "Overdue") {
+            dueDate = `${this.getFullDateString(todo.todo_due)} - `
         } else if (heading == "Today") {
-            dueDate = `${getTimeString(todo.todo_due, profile.hourFormat, profile.minuteFormat, profile.timeIs12Hour)} - `
+            dueDate = `${this.getTimeString(todo.todo_due)} - `
         } else if (heading == "This Week") {
-            dueDate = `${getWeekdayString(todo.todo_due, profile.weekdayFormat)} - `
+            dueDate = `${this.getWeekdayString(todo.todo_due)} - `
         } else if (heading == "This Month"){
-                        dueDate =  `${getDateString(todo.todo_due, profile.monthFormat, profile.dayFormat)} - `
+            dueDate =  `${this.getDateString(todo.todo_due)} - `
         } else if (heading == "This Year"){
-            dueDate = `${getDateString(todo.todo_due, profile.monthFormat, profile.dayFormat)} - `
+            dueDate = `${this.getDateString(todo.todo_due)} - `
         } else if (heading == "Future") {
-            dueDate = `${getFullDateString(todo.todo_due, profile.yearFormat, profile.monthFormat, profile.dayFormat)} - `
+            dueDate = `${this.getFullDateString(todo.todo_due)} - `
         }
         return `${dueDate}${todo.title}`
     }
-
 }

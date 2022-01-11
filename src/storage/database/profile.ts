@@ -1,3 +1,4 @@
+import { Profile } from "../../logic/profile";
 import { runQuery } from "./common";
 
 /** createTable *************************************************************************************************************************************
@@ -17,7 +18,7 @@ export async function createTable(){
             monthFormat TEXT,
             dayFormat TEXT,
             weekdayFormat TEXT,
-            "24hrTime" TEXT
+            timeIs12Hour" TEXT
         )
     `
     runQuery('run', createQuery, {})
@@ -64,7 +65,7 @@ export async function updateRecord(id: string, profile:Profile){
             monthFormat = $monthFormat
             dayFormat = $dayFormat
             weekdayFormat = $weekdayFormat
-            timeIs24hr = $timeIs24hr
+            timeIs12Hour = $timeIs12Hour
         WHERE id = $id
     `
     var updateParameters = {
@@ -79,7 +80,7 @@ export async function updateRecord(id: string, profile:Profile){
         $monthFormat: profile.monthFormat,
         $dayFormat: profile.dayFormat,
         $weekdayFormat: profile.weekdayFormat,
-        $timeIs24hr: profile.timeIs24hr
+        $timeIs12Hour: profile.timeIs12Hour
     }
     await runQuery('run', updateQuery, updateParameters)
 }
@@ -107,7 +108,7 @@ function getRecordAsProfile(record): Profile{
         profile.monthFormat = record.monthFormat
         profile.dayFormat = record.dayFormat
         profile.weekdayFormat = record.weekdayFormat
-        profile.timeIs24hr = record.timeIs24hr    
+        profile.timeIs12Hour = record.timeIs12Hour
         return profile
     }
 }

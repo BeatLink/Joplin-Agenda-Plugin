@@ -1,7 +1,7 @@
 /** Profile *****************************************************************************************************************************************
  * This data class represents a specific Agenda profile that customizes the presentation of the panels and notes                                    *
  ***************************************************************************************************************************************************/
- class Profile {
+export class Profile {
     public name = 'New Profile'
     public searchCriteria = ''
     public noteID = ""
@@ -12,5 +12,5 @@
     public monthFormat = 'long'
     public dayFormat = 'numeric'
     public weekdayFormat = 'long'
-    public timeIs24hr = true
+    public timeIs12Hour = true
 }

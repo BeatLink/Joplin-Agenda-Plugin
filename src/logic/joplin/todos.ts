@@ -1,6 +1,6 @@
 /* Imports *****************************************************************************************************************************************/
 import joplin from 'api';
-import { updateInterfaces } from './updater';
+import { updateInterfaces } from '../updater';
 
 /** getTodos ****************************************************************************************************************************************
  * Returns the list of todos, sorted by due date. If show completed is true, it will include completed todos. If show no due is true, it will       *
@@ -12,7 +12,6 @@ import { updateInterfaces } from './updater';
     var allTodos = [];
     let pageNum = 0;
     do {
-        console.log("fetching todos")
         var response = await joplin.data.get(
             ['search'],
             {
@@ -27,7 +26,7 @@ import { updateInterfaces } from './updater';
     return allTodos
 }
 
-export async function openNote(note){
+export async function openTodo(note){
     await joplin.commands.execute('openNote', note);
 }
 
