@@ -1,4 +1,4 @@
-import { BaseFormat } from "./common"
+import { BaseFormat } from "./common/baseFormat"
 
 /** IntervalFormat **********************************************************************************************************************************
  * This format groups todos by specific dates then names the todo according to the due time on that date                                            *
@@ -6,7 +6,10 @@ import { BaseFormat } from "./common"
  export class IntervalFormat extends BaseFormat {
 
     protected getFormatHeadingString(todo){
-        var heading = ""       
+        var heading = ""  
+        console.log(this.profile)
+        console.log(this.getStartOfToday)
+        console.log(this.getStartOfToday())     
         var todoDate =  new Date(todo.todo_due)
         if (todo.todo_due == 0){
             heading = "No Due Date"

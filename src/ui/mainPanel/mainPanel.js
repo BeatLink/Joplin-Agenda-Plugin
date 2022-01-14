@@ -11,3 +11,10 @@ async function onTodoClicked(todoID){
 async function onTodoChecked(todoID){
     await webviewApi.postMessage(['todoChecked', todoID]);
 }
+
+/** onProfilesDropdownChanged ************************************************************************************************************************
+ * When the profiles dropdown is changed, this function sends a message to the main plugin to load the new profile                                   *
+ ***************************************************************************************************************************************************/ 
+async function onProfilesDropdownChanged(profileID){
+    await webviewApi.postMessage(['profilesDropdownChanged', profileID]);
+}

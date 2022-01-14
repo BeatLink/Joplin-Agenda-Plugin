@@ -1,4 +1,4 @@
-import { Profile } from "../../logic/profile";
+import { Profile } from "../../logic/models/profile";
 import { runQuery } from "./common";
 
 /** createTable *************************************************************************************************************************************
@@ -7,7 +7,7 @@ import { runQuery } from "./common";
 export async function createTable(){
     var createQuery = `
         CREATE TABLE IF NOT EXISTS Profile (
-            id TEXT PRIMARY KEY,
+            id INTEGER PRIMARY KEY,
             name TEXT,
             searchCriteria TEXT,
             noteID TEXT,
@@ -18,18 +18,24 @@ export async function createTable(){
             monthFormat TEXT,
             dayFormat TEXT,
             weekdayFormat TEXT,
-            timeIs12Hour" TEXT
+            timeIs12Hour TEXT
         )
     `
-    runQuery('run', createQuery, {})
+    await runQuery('run', createQuery, {})
 }
 
 /** createRecord ************************************************************************************************************************************
  * Creates a new recurrence record in the recurrence database when given the noteID and recurrence data object.                                     *
  ***************************************************************************************************************************************************/
-export async function createRecord(profile: Profile){
-    var id = await runQuery('run', `INSERT INTO Profiles DEFAULT VALUES OUTPUT inserted.id`, {})
+export async function createRecord(profile=new Profile()){
+    await runQuery('run', `INSERT INTO Profile DEFAULT VALUES`, {})
+    var id = await getLastRowID()
     await updateRecord(id, profile);
+    return id
+}
+
+async function getLastRowID(){
+    return (await runQuery("get", " SELECT LAST_INSERT_ROWID()", {}))['LAST_INSERT_ROWID()']
 }
 
 /** getAllRecords ***********************************************************************************************************************************
@@ -37,13 +43,17 @@ export async function createRecord(profile: Profile){
  ***************************************************************************************************************************************************/
 export async function getAllRecords(){
     var records = await runQuery('all', `SELECT * FROM Profile`, {})
-    return records.map((record) => ({id: record.id, profile: getRecordAsProfile(record)}))
+    var allProfiles = {}
+    for (var record of records){
+        allProfiles[record.id] = getRecordAsProfile(record)
+    }
+    return allProfiles
 }
 
 /** getRecord ***************************************************************************************************************************************
  * Gets recurrence record from the database for the corresponding note ID                                                                           *
  ***************************************************************************************************************************************************/
-export async function getRecord(id): Promise<Profile>{
+export async function getRecord(id){
     var record = await runQuery('get', `SELECT * FROM Profile WHERE id = $id`, {$id: id})
     return getRecordAsProfile(record)
 }
@@ -51,20 +61,20 @@ export async function getRecord(id): Promise<Profile>{
 /** UpdateRecord ************************************************************************************************************************************
  * This is a helper function that updates a recurrence record in the database when given the noteID and recurrence data object                      *
  ***************************************************************************************************************************************************/
-export async function updateRecord(id: string, profile:Profile){
+export async function updateRecord(id, profile){
     var updateQuery = `
         UPDATE Profile
         SET
-            name = $name
-            searchCriteria = $searchCriteria
-            noteID = $noteID
-            showCompleted = $showCompleted
-            showNoDue = $showNoDue
-            displayFormat = $displayFormat
-            yearFormat = $yearFormat
-            monthFormat = $monthFormat
-            dayFormat = $dayFormat
-            weekdayFormat = $weekdayFormat
+            name = $name,
+            searchCriteria = $searchCriteria,
+            noteID = $noteID,
+            showCompleted = $showCompleted,
+            showNoDue = $showNoDue,
+            displayFormat = $displayFormat,
+            yearFormat = $yearFormat,
+            monthFormat = $monthFormat,
+            dayFormat = $dayFormat,
+            weekdayFormat = $weekdayFormat,
             timeIs12Hour = $timeIs12Hour
         WHERE id = $id
     `
@@ -82,6 +92,8 @@ export async function updateRecord(id: string, profile:Profile){
         $weekdayFormat: profile.weekdayFormat,
         $timeIs12Hour: profile.timeIs12Hour
     }
+    console.log(id)
+    console.log(profile)
     await runQuery('run', updateQuery, updateParameters)
 }
 

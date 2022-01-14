@@ -1,13 +1,5 @@
 /** Imports ****************************************************************************************************************************************/
-import { getTodos } from "../joplin/todos";
-import { DateFormat } from "./date";
-import { IntervalFormat } from "./interval";
-
-/** Variable Declaration ***************************************************************************************************************************/
-export var formats = {
-    'interval': IntervalFormat,
-    'date': DateFormat
-}
+import { getTodos } from "../../../joplin";
 
 /** BaseFormat **************************************************************************************************************************************
  * This is the abstract class that all other formats must inherit from.                                                                             *
@@ -46,7 +38,7 @@ export abstract class BaseFormat {
         this.outputFormat = outputFormat
         var todoString = ""
         var todoList = await getTodos(this.profile.showCompleted, this.profile.showNoDue, this.profile.searchCriteria)
-        var todoMap = this.groupBy(todoList, this.getFormatHeadingString)
+        var todoMap = this.groupBy(todoList)
         for (var headingGroup of todoMap){
             var heading = headingGroup[0]
             todoString += this.getHeadingString(heading)
@@ -86,19 +78,20 @@ export abstract class BaseFormat {
             `            
         }
     }
+    
     /** groupBy *****************************************************************************************************************************************
      * Takes an array, and a grouping function, and returns a Map of the array grouped by the grouping function.                                        *
      * Source: https://stackoverflow.com/a/38327540                                                                                                     *
      ***************************************************************************************************************************************************/
-    private groupBy(list, keyGetter) {
+    private groupBy(todoList) {
         const map = new Map();
-        list.forEach((item) => {
-            const key = keyGetter(item);
-            const collection = map.get(key);
-            if (!collection) {
-                map.set(key, [item]);
+        todoList.forEach((todo) => {
+            const heading =  this.getFormatHeadingString(todo);
+            const headingGroup = map.get(heading);
+            if (!headingGroup) {
+                map.set(heading, [todo]);
             } else {
-                collection.push(item);
+                headingGroup.push(todo);
             }
         });
         return map;
@@ -149,14 +142,13 @@ export abstract class BaseFormat {
         })
     }
 
-
     /** getStartOfToday *********************************************************************************************************************************
      * Gets the date representing the start of the current day. Provided as convenience for use in custom formats.                                      *                                                                    *
      ***************************************************************************************************************************************************/
     protected getStartOfToday(){
-        var startOfToday = new Date()
+        var startOfToday = new Date();
         startOfToday.setHours(0,0,0,0);
-        return startOfToday    
+        return startOfToday;
     }
 
     /** getEndOfToday ***********************************************************************************************************************************

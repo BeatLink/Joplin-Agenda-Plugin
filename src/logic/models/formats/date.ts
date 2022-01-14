@@ -1,4 +1,4 @@
-import { BaseFormat } from "./common"
+import { BaseFormat } from "./common/baseFormat"
 
 export class DateFormat extends BaseFormat {
 

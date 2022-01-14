@@ -1,0 +1,77 @@
+<h1>Agenda Profiles</h1>
+<form name="agendaProfilesForm">
+    <input id="profilesDataInput" type="hidden" name="profilesData" value="<<PROFILES_DATA>>">
+    <select id="profilesDropdown"">
+        <option value="profilesIDHere" selected>profileNameHere</option>
+    </select>
+        Create
+        Edit
+        Delete
+    
+    <fieldset id="settingsFieldset">
+        <legend>Profile Settings</legend>
+        <table>
+            <tr>
+                <td><label for="nameInput">Name</label></td>
+                <td><input id="nameInput" type="text" value=""></td>
+            </tr>
+            <tr>
+                <td><label for="searchCriteriaInput">Search Criteria</label></td>
+                <td><input id="searchCriteriaInput" type="text" value=""></td>
+            </tr>
+            <tr>
+                <td><label for="noteIdInput">Overview Note ID</label></td>
+                <td><input id="noteIdInput" type="text" value=""></td>
+            </tr>
+            <tr>
+                <td><input id="noteIdInput" type="checkbox" value=""></td>
+                <td><label for="noteIdInput">Show completed todos</label></td>
+            </tr>
+            <tr>
+                <td><input id="noteIdInput" type="checkbox" value=""></td>
+                <td><label for="noteIdInput">Show todos with no due date</label></td>
+            </tr>
+            <tr>
+                <td><label for="displayFormatInput">Display Format</label></td>
+                <td>        
+                    <select id="displayFormatInput">
+                        <option value="interval" selected>Interval</option>
+                        <option value="date">Date</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><label>Date Format</label></td>
+                <td>
+                    <table>
+                        <tr>
+                            <th>Year</th>
+                            <th>Month</th>
+                            <th>Day</th>
+                        </tr>
+                        <tr><td>Year</td><td>Month</td><td>Day</td></tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td><label>Weeday Format</label></td>
+                <td>
+                    <select>
+                        <option>Monday</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><label>Time Format</label></td>
+                <td>
+                    <select>
+                        <option>AM/PM</option>
+                        <option>24 Hours</option>
+                    </select>
+                </td>
+            </tr>
+        </table>	        
+    </fieldset>
+    <label>Delete Profile</label>
+    <input type="button" value="Delete" >
+</form>

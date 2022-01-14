@@ -8,10 +8,11 @@
 
 /** Imports ****************************************************************************************************************************************/
 import joplin from "api";
-import { updatePanelData } from "../ui/panel/panel";
-import { formats } from "./formats/common";
-import { connectNoteChangedCallback } from "./joplin/events";
-import { Profile } from "./profile";
+import { updatePanelData } from "../ui/mainPanel/mainPanel";
+import { DateFormat } from "./models/formats/date";
+import { IntervalFormat } from "./models/formats/interval";
+import { connectNoteChangedCallback } from "./joplin";
+import { Profile } from "./models/profile";
 
 /** Variable Initialization ************************************************************************************************************************/
 var updateNeeded = false;
@@ -50,11 +51,5 @@ export async function setupUpdater(){
  * Updates the panel and the notes associated with the current profile                                                                              *
  ***************************************************************************************************************************************************/
 export async function updateInterfaces(){
-    //var formattedHTML = formatter.getString(todoList)
-    //var formatter = formats[profile.displayFormat]
-    //var currentProfile = await joplin.settings.value("agendaCurrentProfile")
-    var profile = new Profile()
-    var formatter = new formats[profile.displayFormat](profile)
-    var formattedTodosHTML = await formatter.getTodos("html")
-    await updatePanelData(formattedTodosHTML)
+    await updatePanelData()
 }
