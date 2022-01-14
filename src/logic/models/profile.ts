@@ -1,5 +1,5 @@
 import joplin from "api"
-import { getRecord } from "../../storage/database/profile"
+import { getAllRecords, getRecord } from "../../storage/database/profile"
 
 /** Profile *****************************************************************************************************************************************
  * This data class represents a specific Agenda profile that customizes the presentation of the panels and notes                                    *
@@ -30,3 +30,16 @@ export async function getCurrentProfile(){
 export async function setCurrentProfile(profileID){
     await joplin.settings.setValue('currentProfileID', profileID)
 }
+
+export async function getProfilesHTML(){
+    var htmlString = ""
+    var allProfiles = await getAllRecords()
+    var currentProfileID = await joplin.settings.value("currentProfileID")
+    for (var id in allProfiles){
+        var selected = id == currentProfileID ? "selected" : ""
+        var profile = allProfiles[id]
+        htmlString += `<option value="${id}" ${selected}>${profile.name}</option>`
+    }
+    return htmlString
+}
+

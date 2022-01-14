@@ -1,7 +1,7 @@
 /** Imports ****************************************************************************************************************************************/
 import joplin from "api";
 import { formats } from "../../logic/models/formats/common/list";
-import { getCurrentProfile, Profile, setCurrentProfile } from "../../logic/models/profile";
+import { getCurrentProfile, getProfilesHTML, Profile, setCurrentProfile } from "../../logic/models/profile";
 import { openTodo, toggleTodoCompletion } from "../../logic/joplin";
 import { updateInterfaces } from "../../logic/updater";
 import { getAllRecords } from "../../storage/database/profile";
@@ -45,18 +45,6 @@ async function mainPanelEventHandler(message){
 export async function toggleMainPanelVisibility() {
     var visibility = await joplin.views.panels.visible(mainPanel);
     await joplin.views.panels.show(mainPanel, !visibility);
-}
-
-async function getProfilesHTML(){
-    var htmlString = ""
-    var allProfiles = await getAllRecords()
-    var currentProfileID = await joplin.settings.value("currentProfileID")
-    for (var id in allProfiles){
-        var selected = id == currentProfileID ? "selected" : ""
-        var profile = allProfiles[id]
-        htmlString += `<option value="${id}" ${selected}>${profile.name}</option>`
-    }
-    return htmlString
 }
 
 

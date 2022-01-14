@@ -3,11 +3,10 @@ import joplin from 'api';
 import { setupCommands } from './logic/commands';
 import { setupUpdater, updateInterfaces } from './logic/updater';
 import { setupDatabase } from './storage/database/common';
-import { createRecord } from './storage/database/profile';
 import { setupProfileSettings } from './storage/settings/profile';
 import { createMainPanel } from './ui/mainPanel/mainPanel';
-import { setupProfilesDialog } from './ui/profileEditorDialog/profileEditorDialog';
-import { createProfileSelectorDialog } from './ui/profileSelectorDialog/profileSelectorDialog';
+import { setupMenu } from './ui/menus/menus';
+import { setupProfileEditorDialog } from './ui/profileEditorDialog/profileEditorDialog';
 import { setupToolbarButton } from './ui/toolbarButtons/toolbarButtons';
 
 /** Plugin Registration *****************************************************************************************************************************
@@ -31,6 +30,7 @@ joplin.plugins.register({
 
 export async function setupUI(){
     await createMainPanel();
+    await setupProfileEditorDialog()
     await setupToolbarButton()
-    await setupProfilesDialog()
+    await setupMenu()
 }

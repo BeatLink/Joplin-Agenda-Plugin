@@ -2,76 +2,85 @@
 <form name="agendaProfilesForm">
     <input id="profilesDataInput" type="hidden" name="profilesData" value="<<PROFILES_DATA>>">
     <select id="profilesDropdown"">
-        <option value="profilesIDHere" selected>profileNameHere</option>
-    </select>
-        Create
-        Edit
-        Delete
-    
-    <fieldset id="settingsFieldset">
-        <legend>Profile Settings</legend>
+        <<PROFILES_LIST>>
+        <option disabled>──────────</option>
+        <option value="">Create Profile</option>
+    </select>    
+    <fieldset>
+        <legend>Name</legend>
+        <input id="nameInput" type="text" value="">
+    </fieldset>
+    <fieldset>
+        <legend>Search Criteria</legend>
+        <input id="searchCriteriaInput" type="text" value="">
+    </fieldset>
+    <fieldset>
+        <legend>Overview Note ID</legend>
+        <input id="noteIdInput" type="text" value="">
+    </fieldset>
+    <fieldset>
+        <legend>Show Completed</legend>
+        <input id="showCompletedCheckbox" type="checkbox" value="">
+        <label for="showCompletedCheckbox">Show completed todos</label>
+    </fieldset>
+    <fieldset>
+        <legend>Show No Due Dates</legend>
+        <input id="showNoDueCheckbox" type="checkbox" value="">
+        <label for="showNoDueCheckbox">Show todos with no due date</label>
+    </fieldset>
+    <fieldset>
+        <legend>Display Format</legend>
+        <select id="displayFormatInput">
+            <option value="interval" selected>Interval</option>
+            <option value="date">Date</option>
+        </select>
+    </fieldset>
+    <fieldset>
+        <legend>Date Format<</legend>
         <table>
             <tr>
-                <td><label for="nameInput">Name</label></td>
-                <td><input id="nameInput" type="text" value=""></td>
+                <td>Year</td>
+                <td>Month</td>
+                <td>Day</td>
             </tr>
             <tr>
-                <td><label for="searchCriteriaInput">Search Criteria</label></td>
-                <td><input id="searchCriteriaInput" type="text" value=""></td>
-            </tr>
-            <tr>
-                <td><label for="noteIdInput">Overview Note ID</label></td>
-                <td><input id="noteIdInput" type="text" value=""></td>
-            </tr>
-            <tr>
-                <td><input id="noteIdInput" type="checkbox" value=""></td>
-                <td><label for="noteIdInput">Show completed todos</label></td>
-            </tr>
-            <tr>
-                <td><input id="noteIdInput" type="checkbox" value=""></td>
-                <td><label for="noteIdInput">Show todos with no due date</label></td>
-            </tr>
-            <tr>
-                <td><label for="displayFormatInput">Display Format</label></td>
-                <td>        
-                    <select id="displayFormatInput">
-                        <option value="interval" selected>Interval</option>
-                        <option value="date">Date</option>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td><label>Date Format</label></td>
-                <td>
-                    <table>
-                        <tr>
-                            <th>Year</th>
-                            <th>Month</th>
-                            <th>Day</th>
-                        </tr>
-                        <tr><td>Year</td><td>Month</td><td>Day</td></tr>
-                    </table>
-                </td>
-            </tr>
-            <tr>
-                <td><label>Weeday Format</label></td>
                 <td>
                     <select>
-                        <option>Monday</option>
+                        <option value="numeric">2022</option>
+                        <option value="2-digit">22</option>            
                     </select>
                 </td>
-            </tr>
-            <tr>
-                <td><label>Time Format</label></td>
                 <td>
                     <select>
-                        <option>AM/PM</option>
-                        <option>24 Hours</option>
+                        <option value="long">January</option>
+                        <option value="short">Jan</option>
+                        <option value="narrow">Narrow</option>
+                        <option value="2-digit">01</option>
+                        <option value="numeric">1</option>
+                    </select>
+                </td>
+                <td>
+                    <select>
+                        <option value="numeric">9</option>
+                        <option value="2-digit">09</option>            
                     </select>
                 </td>
             </tr>
-        </table>	        
+        </table>
     </fieldset>
-    <label>Delete Profile</label>
-    <input type="button" value="Delete" >
+    <fieldset>
+        <legend>Weekday Format</legend>
+        <select>
+            <option value="long">Monday</option>
+            <option value="short">Mon</option>
+            <option value="narrow">M</option>
+        </select>
+    </fieldset>
+    <fieldset>
+        <legend>Time Format</legend>
+        <select>
+            <option>AM/PM</option>
+            <option>24 Hours</option>
+        </select>
+    </fieldset>
 </form>
