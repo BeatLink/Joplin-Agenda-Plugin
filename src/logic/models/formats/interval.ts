@@ -1,4 +1,4 @@
-import { BaseFormat } from "./common/baseFormat"
+import { BaseFormat } from "./base"
 
 /** IntervalFormat **********************************************************************************************************************************
  * This format groups todos by specific dates then names the todo according to the due time on that date                                            *

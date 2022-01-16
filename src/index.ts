@@ -2,12 +2,13 @@
 import joplin from 'api';
 import { setupCommands } from './logic/commands';
 import { setupUpdater, updateInterfaces } from './logic/updater';
-import { setupDatabase } from './storage/database/common';
-import { setupProfileSettings } from './storage/settings/profile';
-import { createMainPanel } from './ui/mainPanel/mainPanel';
-import { setupMenu } from './ui/menus/menus';
-import { setupProfileEditorDialog } from './ui/profileEditorDialog/profileEditorDialog';
-import { setupToolbarButton } from './ui/toolbarButtons/toolbarButtons';
+import { setupDatabase } from './storage/database';
+import { setupSettings } from './storage/settings';
+import { setupPanel } from './ui/panel/panel';
+import { setupMenu } from './ui/menu/menu';
+import { setupEditor } from './ui/editor/editor';
+import { setupToolbarButton as setupToolbar } from './ui/toolbar/toolbar';
+import { setupBrowser } from './ui/browser/browser';
 
 /** Plugin Registration *****************************************************************************************************************************
  * Registers the plugin with joplin.                                                                                                                *
@@ -21,16 +22,13 @@ joplin.plugins.register({
  ****************************************************************************************************************************************************/
  export async function setupPlugin(){
     await setupDatabase()
+    await setupSettings()
     await setupCommands()
-    await setupUI()
-    await setupProfileSettings()
+    await setupPanel();
+    await setupBrowser()
+    await setupEditor()
+    await setupToolbar()
+    await setupMenu()
     await setupUpdater()
     await updateInterfaces()
-}
-
-export async function setupUI(){
-    await createMainPanel();
-    await setupProfileEditorDialog()
-    await setupToolbarButton()
-    await setupMenu()
 }

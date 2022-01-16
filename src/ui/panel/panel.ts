@@ -1,10 +1,11 @@
 /** Imports ****************************************************************************************************************************************/
 import joplin from "api";
-import { formats } from "../../logic/models/formats/common/list";
 import { getCurrentProfile, getProfilesHTML, Profile, setCurrentProfile } from "../../logic/models/profile";
 import { openTodo, toggleTodoCompletion } from "../../logic/joplin";
 import { updateInterfaces } from "../../logic/updater";
-import { getAllRecords } from "../../storage/database/profile";
+import { getAllRecords } from "../../storage/database";
+import { IntervalFormat } from "src/logic/models/formats/interval";
+import { DateFormat } from "src/logic/models/formats/date";
 const fs = joplin.require('fs-extra');
 
 /** Variable Declaration ***************************************************************************************************************************/
@@ -15,7 +16,7 @@ export var mainPanel = null;
 /** createPanel *************************************************************************************************************************************
  * Creates the panel in joplin and connects the evwent handler.                                                                                     *
  ***************************************************************************************************************************************************/
-export async function createMainPanel(){
+export async function setupPanel(){
     var htmlFilePath = (await joplin.plugins.installationDir()) + "/ui/mainPanel/mainPanel.html"
     baseHtml = await fs.readFile(htmlFilePath, 'utf8');
     mainPanel = await joplin.views.panels.create('mainPanel')
@@ -52,6 +53,11 @@ export async function toggleMainPanelVisibility() {
  * Displays all todos in the panel, grouped by date and sorted by time                                                                              *
  ***************************************************************************************************************************************************/
  export async function updatePanelData(){
+    var formats = {
+        'interval': IntervalFormat,
+        'date': DateFormat,
+    }
+
     var currentProfile = await getCurrentProfile()
     var profilesList = await getProfilesHTML()
     var profile = currentProfile ? currentProfile : new Profile()

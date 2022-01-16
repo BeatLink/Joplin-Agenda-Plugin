@@ -1,6 +1,6 @@
 import joplin from "api"
 import { MenuItemLocation } from "api/types"
-import { openProfilesDialog } from "../profileEditorDialog/profileEditorDialog"
+import { openProfilesDialog } from "../editor/editor"
 
 /** setupMenu ***************************************************************************************************************************************
  * Sets up the menu used by the plugin                                                                                                              *

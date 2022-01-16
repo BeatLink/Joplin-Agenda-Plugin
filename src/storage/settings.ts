@@ -1,12 +1,11 @@
 /** Imports ****************************************************************************************************************************************/
 import joplin from "api"
 import { SettingItemType } from "api/types"
-import { getRecord } from "../../storage/database/profile"
 
-/** setupProfileSettings ****************************************************************************************************************************
- * Sets up the settings option that stores the ID of the currently selected profile																	*
+/** setupSettings ***********************************************************************************************************************************
+ * Sets up the settings used by the plugin																											*
  ***************************************************************************************************************************************************/
-export async function setupProfileSettings(){
+export async function setupSettings(){
     await joplin.settings.registerSettings({
 		"currentProfileID": {
 			label: "The ID of the current profile used by Agenda",

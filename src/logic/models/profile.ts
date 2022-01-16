@@ -1,5 +1,5 @@
 import joplin from "api"
-import { getAllRecords, getRecord } from "../../storage/database/profile"
+import { getAllRecords, getRecord } from "../../storage/database"
 
 /** Profile *****************************************************************************************************************************************
  * This data class represents a specific Agenda profile that customizes the presentation of the panels and notes                                    *

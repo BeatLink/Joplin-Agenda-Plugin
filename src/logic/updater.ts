@@ -8,7 +8,7 @@
 
 /** Imports ****************************************************************************************************************************************/
 import joplin from "api";
-import { updatePanelData } from "../ui/mainPanel/mainPanel";
+import { updatePanelData } from "../ui/panel/panel";
 import { DateFormat } from "./models/formats/date";
 import { IntervalFormat } from "./models/formats/interval";
 import { connectNoteChangedCallback } from "./joplin";
