@@ -19,6 +19,7 @@ var database = null
  * Runs the code required for database initialization and record updates. This should run at  program start.                                        *
  ***************************************************************************************************************************************************/
 export async function setupDatabase(){
+    console.info("Setting up Database")
     var pluginDir = await joplin.plugins.dataDir()
     databasePath = pluginDir + "/profiles.sqlite3"
     await fs.ensureDir(pluginDir)
@@ -55,7 +56,7 @@ export async function createTable(){
             monthFormat TEXT,
             dayFormat TEXT,
             weekdayFormat TEXT,
-            timeIs12Hour TEXT
+            timeIs12Hour BOOLEAN
         )
     `
     await runQuery('run', createQuery, {})

@@ -18,3 +18,24 @@ async function onTodoChecked(todoID){
 async function onProfilesDropdownChanged(profileID){
     await webviewApi.postMessage(['profilesDropdownChanged', profileID]);
 }
+
+/** onCreateProfileClicked **************************************************************************************************************************
+ * When the edit profile button for a profile is clicked, this function sends a message to the main plugin containing the profile id                *
+ ***************************************************************************************************************************************************/ 
+ async function onCreateProfileClicked(){
+    await webviewApi.postMessage(['createProfileClicked']);
+}
+
+/** onEditProfileClicked ****************************************************************************************************************************
+ * When the edit profile button for a profile is clicked, this function sends a message to the main plugin containing the profile id                *
+ ***************************************************************************************************************************************************/ 
+ async function onEditProfileClicked(profileID){
+    await webviewApi.postMessage(['editProfileClicked']);
+}
+
+/** onDeleteProfileClicked **************************************************************************************************************************
+ * When the delete profile button for a profile is clicked, this function sends a message to the main plugin containing the profile id              *
+ ***************************************************************************************************************************************************/
+ async function onDeleteProfileClicked(profileID){
+    await webviewApi.postMessage(['deleteProfileClicked']);
+}

@@ -1,7 +1,14 @@
 <body>
     <h1>Agenda</h1>
-    <select id="profilesDropdown" onchange="onProfilesDropdownChanged(this.value)">
-        <<PROFILES_LIST>>
-    </select>
+    <section id="profileSection">
+        <select id="profileDropdown" onchange="onProfilesDropdownChanged(this.value)">
+            <<PROFILES_LIST>>
+        </select>
+        <section id=profileButtonsSection style="display: PROFILE_EDIT_MODE;">
+            <i class="fa fa-plus" title="Create New Profile" aria-hidden="true" onclick="onCreateProfileClicked()"></i>
+            <i class="fa fa-edit" title="Edit Profile" aria-hidden="true" onclick="onEditProfileClicked()"></i>
+            <i class="fa fa-trash" title="Delete Profile" aria-hidden="true" onclick="onDeleteProfileClicked()"></i>        
+        </section>
+    </section>
     <<TODOS>>
 </body>

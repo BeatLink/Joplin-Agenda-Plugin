@@ -17,29 +17,3 @@ export class Profile {
     public weekdayFormat = 'long'
     public timeIs12Hour = true
 }
-
-/** getCurrentProfile *******************************************************************************************************************************
- * Gets the currently selected profile                                                                                                              *
- ***************************************************************************************************************************************************/
-export async function getCurrentProfile(){
-    var currentProfileID = await joplin.settings.value("currentProfileID")
-	var currentProfile = await getRecord(currentProfileID)
-    return currentProfile
-}
-
-export async function setCurrentProfile(profileID){
-    await joplin.settings.setValue('currentProfileID', profileID)
-}
-
-export async function getProfilesHTML(){
-    var htmlString = ""
-    var allProfiles = await getAllRecords()
-    var currentProfileID = await joplin.settings.value("currentProfileID")
-    for (var id in allProfiles){
-        var selected = id == currentProfileID ? "selected" : ""
-        var profile = allProfiles[id]
-        htmlString += `<option value="${id}" ${selected}>${profile.name}</option>`
-    }
-    return htmlString
-}
-
