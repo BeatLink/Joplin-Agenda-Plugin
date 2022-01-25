@@ -7,18 +7,22 @@ import { DateFormat } from "../../core/formats/date";
 import { deleteRecord, getAllRecords, getRecord } from "../../core/database";
 import { openDeleteConfirmation, openEditor } from "../editor/editor";
 import { getCurrentProfileID, setCurrentProfileID } from "../../core/settings";
+import { Profile } from "../../core/profile";
 const fs = joplin.require('fs-extra');
 
 /** Variable Declaration ***************************************************************************************************************************/
 var panel = null;
 var baseHtml = "";
 
+
+//implement css for panel and profile editor
+
 /** createPanel *************************************************************************************************************************************
  * Creates the panel in joplin and connects the evwent handler.                                                                                     *
  ***************************************************************************************************************************************************/
 export async function setupPanel(){
     panel = await joplin.views.panels.create('panel')
-    baseHtml = await fs.readFile((await joplin.plugins.installationDir()) + "/ui/panel/panel.html");
+    baseHtml = await fs.readFile((await joplin.plugins.installationDir()) + "/ui/panel/panel.html", "utf-8");
     await joplin.views.dialogs.addScript(panel, '/ui/panel/panel.js')
     await joplin.views.dialogs.addScript(panel, '/ui/panel/panel.css')
     await joplin.views.panels.onMessage(panel, eventHandler)
@@ -46,6 +50,7 @@ async function eventHandler(message){
     } else if (message[0] == 'deleteProfileClicked'){
         var id = await getCurrentProfileID()
         await openDeleteConfirmation(id)
+        await updateInterfaces()
     }
 }    
 
@@ -84,7 +89,7 @@ export async function getProfilesHTML(){
     console.log(currentProfile)
     var profileEditMode = await joplin.settings.value("profileEditMode")
     var profilesList = await getProfilesHTML()
-    var profile = currentProfile ? currentProfile : getAllRecords()[0]
+    var profile = currentProfile ? currentProfile : new Profile()
     var formatter = new formats[profile.displayFormat](profile)
     var todosHtml = await formatter.getTodos('html')
     var htmlStringWithProfileEditMode = baseHtml.replace("PROFILE_EDIT_MODE", profileEditMode)

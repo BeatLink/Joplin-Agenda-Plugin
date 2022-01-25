@@ -1,0 +1,27 @@
+#joplin-plugin-content {
+    min-width: 300px;
+}
+
+fieldset {
+    margin: 5px 0;
+}
+
+select, input[type="text"], label, table {
+    min-width: -webkit-fill-available;
+}
+
+td {
+    text-align: center;
+}
+
+section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 3px;
+}
+
+input[type="checkbox"] {
+    margin: 0;
+    margin-right: 10px;
+}

@@ -49,11 +49,11 @@ export async function setCurrentProfileID(id){
 //get current id, if not set to profile, get first profile in all records. If no profile in records, create one. 
 export async function getCurrentProfileID(){
 	var currentID = await joplin.settings.value("currentProfileID")
-	if (await getRecord(currentID) == undefined){
+	/*if (await getRecord(currentID) == undefined){
 		var allProfileIDs = Object.keys(await getAllRecords())
 		currentID = allProfileIDs.length < 1 ? await createRecord(new Profile()) :  allProfileIDs[0]
 		await setCurrentProfileID(currentID)
-	}
+	}*/
 	return currentID
 }
 

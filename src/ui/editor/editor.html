@@ -1,80 +1,83 @@
-<h1>Agenda Profiles</h1>
-<form name="agendaProfilesForm">
-    <fieldset>
-        <legend>Name</legend>
-        <input type="text" name="name" value="PROFILE_NAME">
-    </fieldset>
-    <fieldset>
-        <legend>Search Criteria</legend>
-        <input type="text" name="search_criteria" value="PROFLE_SEARCH_CRITERIA">
-    </fieldset>
-    <fieldset>
-        <legend>Overview Note ID</legend>
-        <input type="text" name="note_id" value="PROFILE_NOTE_ID">
-    </fieldset>
-    <fieldset>
-        <legend>Show Completed</legend>
-        <input type="checkbox" name="show_completed" value="PROFILE_SHOW_COMPLETED">
-        <label for="showCompletedCheckbox">Show completed todos</label>
-    </fieldset>
-    <fieldset>
-        <legend>Show No Due Dates</legend>
-        <input id="showNoDueCheckbox" type="checkbox" value="PROFILE_SHOW_NO_DUE">
-        <label for="showNoDueCheckbox">Show todos with no due date</label>
-    </fieldset>
-    <fieldset>
-        <legend>Display Format</legend>
-        <select id="displayFormatInput">
-            <option value="interval" selected>Interval</option>
-            <option value="date">Date</option>
-        </select>
-    </fieldset>
-    <fieldset>
-        <legend>Date Format<</legend>
-        <table>
-            <tr>
-                <td>Year</td>
-                <td>Month</td>
-                <td>Day</td>
-            </tr>
-            <tr>
-                <td>
-                    <select>
-                        <option value="numeric">2022</option>
-                        <option value="2-digit">22</option>            
-                    </select>
-                </td>
-                <td>
-                    <select>
-                        <option value="long">January</option>
-                        <option value="short">Jan</option>
-                        <option value="narrow">Narrow</option>
-                        <option value="2-digit">01</option>
-                        <option value="numeric">1</option>
-                    </select>
-                </td>
-                <td>
-                    <select>
-                        <option value="numeric">9</option>
-                        <option value="2-digit">09</option>            
-                    </select>
-                </td>
-            </tr>
-        </table>
-    </fieldset>
-    <fieldset>
-        <legend>Weekday Format</legend>
-        <select>
-            <option value="long">Monday</option>
-            <option value="short">Mon</option>
-            <option value="narrow">M</option>
-        </select>
-    </fieldset>
-    <fieldset>
-        <legend>Time Format</legend>
-        <select>
-            <option>AM/PM</option>
-            <option>24 Hours</option>
-        </select>
-    </fieldset>
+<fieldset>
+    <legend>Name</legend>
+    <input type="text" id="nameInput" name="name">
+</fieldset>
+<fieldset>
+    <legend>Search Criteria</legend>
+    <input type="text" id="searchCriteriaInput" name="searchCriteria">
+</fieldset>
+<fieldset>
+    <legend>Overview Note ID</legend>
+    <input type="text" id="noteIDInput" name="noteID">
+</fieldset>
+<fieldset>
+    <legend>Show Completed</legend>
+    <section>
+        <input type="checkbox" id="showCompletedCheckbox" name="showCompleted">
+        <label for="showCompletedCheckbox">Show completed todos</label>    
+    </section>
+</fieldset>
+<fieldset>
+    <legend>Show No Due Dates</legend>
+    <section>
+        <input type="checkbox" id="showNoDueCheckbox" name="showNoDue">
+        <label for="showNoDueCheckbox">Show todos with no due date</label>    
+    </section>
+</fieldset>
+<fieldset>
+    <legend>Display Format</legend>
+    <select id="displayFormatSelect" name="displayFormat">
+        <option value="interval">Interval</option>
+        <option value="date">Date</option>
+    </select>    
+</fieldset>
+<fieldset>
+    <legend>Date Format</legend>
+    <table>
+        <tr>
+            <td>Year</td>
+            <td>Month</td>
+            <td>Day</td>
+        </tr>
+        <tr>
+            <td>
+                <select id="yearFormatSelect" name="yearFormat">
+                    <option value="numeric">2022</option>
+                    <option value="2-digit">22</option>            
+                </select>
+            </td>
+            <td>
+                <select id="monthFormatSelect" name="monthFormat">
+                    <option value="long">January</option>
+                    <option value="short">Jan</option>
+                    <option value="narrow">J</option>
+                    <option value="2-digit">01</option>
+                </select>
+            </td>
+            <td>
+                <select id="dayFormatSelect" name="dayFormat">
+                    <option value="numeric">9</option>
+                    <option value="2-digit">09</option>            
+                </select>
+            </td>
+        </tr>
+    </table>    
+</fieldset>
+<fieldset>
+    <legend>Weekday Format</legend>
+    <select id="weekdayFormatSelect" name="weekdayFormat">
+        <option value="long">Monday</option>
+        <option value="short">Mon</option>
+        <option value="narrow">M</option>
+    </select>    
+</fieldset>
+<fieldset>
+    <legend>Time Format</legend>
+    <section>
+        <input type="checkbox" id="timeFormatCheckbox" name="timeFormat">
+        <label for="timeFormatCheckbox">Use AM/PM Format</label>    
+    </section>
+</fieldset>
+<form name="profileDataForm">
+    <input type="hidden" id="profileDataInput" name="profileData" value="<<PROFILE_DATA>>">
 </form>
