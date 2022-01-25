@@ -9,10 +9,10 @@
 /** Imports ****************************************************************************************************************************************/
 import joplin from "api";
 import { updatePanelData } from "../ui/panel/panel";
-import { DateFormat } from "./models/formats/date";
-import { IntervalFormat } from "./models/formats/interval";
+import { DateFormat } from "./formats/date";
+import { IntervalFormat } from "./formats/interval";
 import { connectNoteChangedCallback } from "./joplin";
-import { Profile } from "./models/profile";
+import { Profile } from "./profile";
 
 /** Variable Initialization ************************************************************************************************************************/
 var updateNeeded = false;

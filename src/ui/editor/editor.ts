@@ -1,5 +1,6 @@
 import joplin from "api";
-import { deleteRecord, getRecord } from "../../storage/database";
+import { updateInterfaces } from "../../core/updater";
+import { createRecord, deleteRecord, getRecord } from "../../core/database";
 const fs = joplin.require('fs-extra');
 
 var dialog = null;
@@ -30,10 +31,24 @@ export async function setupEditor(){
     await joplin.views.dialogs.addScript(dialog, '/ui/editor/editor.css')
 }
 
+
+
+export async function getProfileHTML(htmlTemplate, profile){
+    populatedHTMl = htmlTemplate.replace()
+
+}
+
+
+
+
+
 /** openDialog **************************************************************************************************************************************
  * Opens the recurrence dialog for the given noteID                                                                                                 *
  ***************************************************************************************************************************************************/
-export async function openEditor(profileID){
+export async function openEditor(profileID?){
+    if (profileID == undefined){
+        profileID = await createRecord()
+    }
     var profile = await getRecord(profileID) 
     var profileString = btoa(JSON.stringify(profile))
     var htmlWithProfileString = baseHtml.replace("<<PROFILE_DATA>>", profileString)
@@ -43,7 +58,17 @@ export async function openEditor(profileID){
         // save profile data
         //return recurrenceFromJSON(atob(formResult.formData.recurrenceForm.recurrenceData))
     } else if (formResult.id == "delete") {
-        deleteRecord(profileID)
+        await openDeleteConfirmation(profileID)
     }
 }
 
+
+
+export async function openDeleteConfirmation(profileID){
+    var profile = await getRecord(profileID)
+    var response = await joplin.views.dialogs.showMessageBox(`Delete ${profile.name}?`)
+    if (response == 0) {
+        await deleteRecord(profileID)
+        await updateInterfaces()    
+    }
+}

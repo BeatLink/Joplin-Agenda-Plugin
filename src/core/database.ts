@@ -7,7 +7,7 @@
 
 /** Imports ****************************************************************************************************************************************/
 import joplin from "api";
-import { Profile } from "../logic/models/profile";
+import { Profile } from "./profile";
 const fs = joplin.require('fs-extra')
 const sqlite3 = joplin.require('sqlite3')
 

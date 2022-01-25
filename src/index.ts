@@ -1,9 +1,9 @@
 /** Imports *****************************************************************************************************************************************/
 import joplin from 'api'
-import { setupCommands } from './logic/commands'
-import { setupUpdater, updateInterfaces } from './logic/updater'
-import { setupDatabase } from './storage/database'
-import { setupSettings } from './storage/settings'
+import { setupCommands } from './core/commands'
+import { setupUpdater, updateInterfaces } from './core/updater'
+import { setupDatabase } from './core/database'
+import { setupSettings } from './core/settings'
 import { setupPanel } from './ui/panel/panel'
 import { setupMenu } from './ui/menu/menu'
 import { setupEditor } from './ui/editor/editor'

@@ -1,44 +1,26 @@
 /** Imports ****************************************************************************************************************************************/
 import joplin from "api";
-import { openTodo, toggleTodoCompletion } from "../../logic/joplin";
-import { updateInterfaces } from "../../logic/updater";
-import { IntervalFormat } from "../../logic/models/formats/interval";
-import { DateFormat } from "../../logic/models/formats/date";
-import { createRecord, deleteRecord, getAllRecords, getRecord } from "../../storage/database";
-import { openEditor } from "../editor/editor";
-import { Profile } from "../../logic/models/profile";
+import { openTodo, toggleTodoCompletion } from "../../core/joplin";
+import { updateInterfaces } from "../../core/updater";
+import { IntervalFormat } from "../../core/formats/interval";
+import { DateFormat } from "../../core/formats/date";
+import { deleteRecord, getAllRecords, getRecord } from "../../core/database";
+import { openDeleteConfirmation, openEditor } from "../editor/editor";
+import { getCurrentProfileID, setCurrentProfileID } from "../../core/settings";
 const fs = joplin.require('fs-extra');
 
 /** Variable Declaration ***************************************************************************************************************************/
+var panel = null;
 var baseHtml = "";
-export var panel = null;
-
-
-//create
-//view
-//edit
-//delete
-
-//load all profiles
-//code function to switch profile on dropdown changes
-//code function to update existing profile
-//code function to create new profile
-//code function to delete existing profile
-//implement css for panel and profile editor
-
-
 
 /** createPanel *************************************************************************************************************************************
  * Creates the panel in joplin and connects the evwent handler.                                                                                     *
  ***************************************************************************************************************************************************/
 export async function setupPanel(){
-    console.log("Setting up Panel")
-    var htmlFilePath = (await joplin.plugins.installationDir()) + "/ui/panel/panel.html"
-    baseHtml = await fs.readFile(htmlFilePath, 'utf8');
     panel = await joplin.views.panels.create('panel')
+    baseHtml = await fs.readFile((await joplin.plugins.installationDir()) + "/ui/panel/panel.html");
     await joplin.views.dialogs.addScript(panel, '/ui/panel/panel.js')
     await joplin.views.dialogs.addScript(panel, '/ui/panel/panel.css')
-    console.log(htmlFilePath)
     await joplin.views.panels.onMessage(panel, eventHandler)
 }
 
@@ -52,20 +34,18 @@ async function eventHandler(message){
         await toggleTodoCompletion(message[1])
         await updateInterfaces()
     } else if (message[0] == 'profilesDropdownChanged'){
-        await joplin.settings.setValue("currentProfileID", message[1])
+        await setCurrentProfileID(message[1])
         await updateInterfaces()
     } else if (message[0] == 'createProfileClicked'){
-        var id = await createRecord()
-        await openEditor(id)
+        await openEditor()
         await updateInterfaces()    
     } else if (message[0] == 'editProfileClicked'){
-        var id = await joplin.settings.value("currentProfileID")
+        var id = await getCurrentProfileID()
         await openEditor(id)
         await updateInterfaces()
     } else if (message[0] == 'deleteProfileClicked'){
-        var id = await joplin.settings.value("currentProfileID")
-        await deleteRecord(id)
-        await updateInterfaces()
+        var id = await getCurrentProfileID()
+        await openDeleteConfirmation(id)
     }
 }    
 
@@ -78,9 +58,9 @@ export async function togglePanelVisibility() {
 }
 
 export async function getProfilesHTML(){
-    var htmlString = ""
     var allProfiles = await getAllRecords()
-    var currentProfileID = await joplin.settings.value("currentProfileID")
+    var currentProfileID = await getCurrentProfileID()
+    var htmlString = ""
     for (var id in allProfiles){
         var selected = id == currentProfileID ? "selected" : ""
         var profile = allProfiles[id]
@@ -98,11 +78,13 @@ export async function getProfilesHTML(){
         'interval': IntervalFormat,
         'date': DateFormat,
     }
-    var currentProfileID = await joplin.settings.value("currentProfileID")
+    var currentProfileID = await getCurrentProfileID()
+    console.log(currentProfileID)
     var currentProfile = await getRecord(currentProfileID)
+    console.log(currentProfile)
     var profileEditMode = await joplin.settings.value("profileEditMode")
     var profilesList = await getProfilesHTML()
-    var profile = currentProfile ? currentProfile : new Profile()
+    var profile = currentProfile ? currentProfile : getAllRecords()[0]
     var formatter = new formats[profile.displayFormat](profile)
     var todosHtml = await formatter.getTodos('html')
     var htmlStringWithProfileEditMode = baseHtml.replace("PROFILE_EDIT_MODE", profileEditMode)

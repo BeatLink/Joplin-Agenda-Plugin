@@ -1,6 +1,6 @@
 /** Imports ****************************************************************************************************************************************/
 import joplin from "api";
-import { toggleProfileEditMode } from "../storage/settings";
+import { toggleProfileEditMode } from "./settings";
 import { togglePanelVisibility } from "../ui/panel/panel";
 
 /** setupCommands ***********************************************************************************************************************************
