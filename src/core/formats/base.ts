@@ -54,7 +54,7 @@ export abstract class BaseFormat {
      ***********************************************************************************************************************************************/
     private getHeadingString(headingString){
         if (this.outputFormat == "markdown"){
-            return `## ${headingString}`    
+            return `## ${headingString}\n`    
         } else if (this.outputFormat == "html") {
             return `<h2>${headingString}</h2>`; 
         }
@@ -66,8 +66,8 @@ export abstract class BaseFormat {
     private getTodoString(todo, heading){
         var todoString = this.getFormatTodoString(todo, heading)
         if (this.outputFormat == "markdown"){
-            var checkedString = todo.todo_completed ? "x" : "" 
-            return `- [${checkedString}] [${todoString}](:/${todo.id})`    
+            var checkedString = todo.todo_completed ? "x" : " "
+            return `- [${checkedString}] [${todoString}](:/${todo.id})\n`    
         } else if (this.outputFormat == "html") {
             var checkedString = todo.todo_completed ? "checked" : "" 
             return `

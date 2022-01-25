@@ -30,6 +30,14 @@ export async function openTodo(todoID){
     await joplin.commands.execute('openNote', todoID);
 }
 
+export async function getNoteContent(noteID){
+    return await joplin.data.get(['notes', noteID], { fields: ['id', 'title', 'body']})
+}
+
+export async function setNoteContent(noteID, noteBody){
+    await joplin.data.put(['notes', noteID], null, { body: noteBody})
+}
+
 /** toggleTodoCompletion ****************************************************************************************************************************
  * Toggles between done and undone, the todo with the given ID                                                                                      *
  ***************************************************************************************************************************************************/

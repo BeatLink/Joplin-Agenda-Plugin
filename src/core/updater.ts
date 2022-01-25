@@ -12,6 +12,7 @@ import { updatePanelData } from "../ui/panel/panel";
 import { DateFormat } from "./formats/date";
 import { IntervalFormat } from "./formats/interval";
 import { connectNoteChangedCallback } from "./joplin";
+import { updateNoteData } from "./markdown";
 import { Profile } from "./profile";
 
 /** Variable Initialization ************************************************************************************************************************/
@@ -52,4 +53,5 @@ export async function setupUpdater(){
  ***************************************************************************************************************************************************/
 export async function updateInterfaces(){
     await updatePanelData()
+    await updateNoteData()
 }
