@@ -9,11 +9,13 @@
 /** Imports ****************************************************************************************************************************************/
 import joplin from "api";
 import { updatePanelData } from "../ui/panel/panel";
+import { getRecord } from "./database";
 import { DateFormat } from "./formats/date";
 import { IntervalFormat } from "./formats/interval";
 import { connectNoteChangedCallback } from "./joplin";
 import { updateNoteData } from "./markdown";
 import { Profile } from "./profile";
+import { getCurrentProfileID } from "./settings";
 
 /** Variable Initialization ************************************************************************************************************************/
 var updateNeeded = false;
@@ -29,6 +31,11 @@ export async function setupUpdater(){
  ***************************************************************************************************************************************************/
  export async function setupEventHandler(event?){
     async function requestUpdate(event?){
+        console.log(event)
+        var currentProfileID = await getCurrentProfileID()
+        var currentProfile = await getRecord(currentProfileID)
+        console.log(currentProfile)
+        if (event.item_id != currentProfile.noteID)
         updateNeeded = true
     }    
     await connectNoteChangedCallback(requestUpdate)
@@ -45,13 +52,14 @@ export async function setupUpdater(){
             updateNeeded = false;
         }    
     }
-    setInterval(pollForUpdates, 1000)
+    setInterval(pollForUpdates, 5000)
 }
 
 /** updateInterfaces ********************************************************************************************************************************
  * Updates the panel and the notes associated with the current profile                                                                              *
  ***************************************************************************************************************************************************/
 export async function updateInterfaces(){
+    console.log("Updating")
     await updatePanelData()
     await updateNoteData()
 }

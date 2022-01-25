@@ -84,9 +84,7 @@ export async function getProfilesHTML(){
         'date': DateFormat,
     }
     var currentProfileID = await getCurrentProfileID()
-    console.log(currentProfileID)
     var currentProfile = await getRecord(currentProfileID)
-    console.log(currentProfile)
     var profileEditMode = await joplin.settings.value("profileEditMode")
     var profilesList = await getProfilesHTML()
     var profile = currentProfile ? currentProfile : new Profile()

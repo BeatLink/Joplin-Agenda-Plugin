@@ -60,5 +60,5 @@ export async function toggleTodoCompletion(todoID){
             cursor = response.cursor
         } while (response.has_more)    
     }
-    setInterval(processChanges, 500)
+    setInterval(processChanges, 5000)
 }

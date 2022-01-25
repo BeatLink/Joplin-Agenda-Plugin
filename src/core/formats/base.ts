@@ -135,8 +135,6 @@ export abstract class BaseFormat {
      * Provided as convenience for use in custom formats                                                                                                *
      ***************************************************************************************************************************************************/
     protected getTimeString(date){
-        console.log("HEEEERE")
-        console.log(this.profile.timeIs12Hour == 1)
         return new Date(date).toLocaleTimeString(undefined, {
             hour: 'numeric', 
             minute: 'numeric', 

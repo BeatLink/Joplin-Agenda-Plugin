@@ -12,11 +12,7 @@ import { getCurrentProfileID } from "./settings"
  * Displays all todos in the panel, grouped by date and sorted by time                                                                              *
  ***************************************************************************************************************************************************/
 
-var baseMarkDown = `
-# <<PROFILE_NAME>>
-
-<<TODOS>>
-`
+var baseMarkDown = `# <<PROFILE_NAME>>\n<<TODOS>>`
 
 export async function updateNoteData(){
     var formats = {
@@ -26,8 +22,6 @@ export async function updateNoteData(){
     var currentProfileID = await getCurrentProfileID()
     var currentProfile = await getRecord(currentProfileID)
     var profile = currentProfile ? currentProfile : new Profile()
-
-    console.log(profile.noteID)
     if (profile.noteID) {
         var note = await getNoteContent(profile.noteID)
         if (note != undefined){

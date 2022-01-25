@@ -74,7 +74,6 @@ export async function openEditor(profileID?){
     }
     var profile = await getRecord(profileID) 
     var formattedHtml = baseHtml.replace("<<PROFILE_DATA>>", profileToString(profile))
-    console.log(formattedHtml)
     await joplin.views.dialogs.setHtml(dialog, formattedHtml);
     var formResult = await joplin.views.dialogs.open(dialog)
     if (formResult.id == 'ok') {

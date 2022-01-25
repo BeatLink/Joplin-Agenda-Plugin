@@ -130,8 +130,6 @@ export async function updateRecord(id, profile){
         $weekdayFormat: profile.weekdayFormat,
         $timeIs12Hour: profile.timeIs12Hour
     }
-    console.log(id)
-    console.log(profile)
     await runQuery('run', updateQuery, updateParameters)
 }
 

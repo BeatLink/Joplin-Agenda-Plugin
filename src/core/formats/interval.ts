@@ -6,10 +6,7 @@ import { BaseFormat } from "./base"
  export class IntervalFormat extends BaseFormat {
 
     protected getFormatHeadingString(todo){
-        var heading = ""  
-        console.log(this.profile)
-        console.log(this.getStartOfToday)
-        console.log(this.getStartOfToday())     
+        var heading = ""
         var todoDate =  new Date(todo.todo_due)
         if (todo.todo_due == 0){
             heading = "No Due Date"
