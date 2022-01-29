@@ -28,9 +28,7 @@ timeIs12HourCheckbox.addEventListener("change", saveProfileData)
 
 // Load Profile Data
 function loadProfileData() {
-    var profileString = atob(profileDataInput.value)
-    var profileObject = JSON.parse(profileString)
-    console.log(profileObject)
+    var profileObject = JSON.parse(atob(profileDataInput.value))
     nameInput.value = profileObject["name"]
     searchCriteriaInput.value = profileObject["searchCriteria"]
     noteIDInput.value = profileObject["noteID"]
@@ -59,8 +57,7 @@ function saveProfileData(){
         "weekdayFormat": weekdayFormatSelect.value,
         "timeIs12Hour": timeIs12HourCheckbox.checked
     }
-    var profileString = JSON.stringify(profileObject)
-    profileDataInput.value = btoa(profileString)
+    profileDataInput.value = btoa(JSON.stringify(profileObject))
 }
 
 loadProfileData()

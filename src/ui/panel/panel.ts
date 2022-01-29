@@ -102,7 +102,6 @@ async function getProfileControlsHTML(){
     var currentProfileID = await getCurrentProfileID()
     var profileListString = ""
     for (var profile of await getAllProfiles()){
-        console.error(profile)
         var selected = currentProfileID && currentProfileID == profile.id ? "selected" : ""
         profileListString += `<option value="${profile.id}" ${selected}>${profile.name}</option>`
     }
