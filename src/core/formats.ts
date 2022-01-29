@@ -1,13 +1,22 @@
+/** README ******************************************************************************************************************************************
+ *  This file contains the base format abstract class that forms the basis of the customizable formatting system. All custom formats must implement *
+ *  this class                                                                                                                                      *
+ ***************************************************************************************************************************************************/
+
 /** Imports ****************************************************************************************************************************************/
-import { getTodos } from "../joplin";
+import { getTodos } from "./joplin";
 
 /** BaseFormat **************************************************************************************************************************************
  * This is the abstract class that all other formats must inherit from.                                                                             *
  ***************************************************************************************************************************************************/
-export abstract class BaseFormat {
+abstract class BaseFormat {
 
-    constructor(profile) {
+    /** constructor *********************************************************************************************************************************
+     * This constructor takes and stores the profile that contains customizations as well as the output format, whether it be "html" or "markdown"  *
+     ***********************************************************************************************************************************************/
+    constructor(profile, outputFormat) {
         this.profile = profile
+        this.outputFormat = outputFormat
     }
 
     /** profile *************************************************************************************************************************************
@@ -31,11 +40,10 @@ export abstract class BaseFormat {
     protected abstract getFormatTodoString(todo, heading): string
     
     /** getTodos ************************************************************************************************************************************
-     * This is the main method of this class. It returns the formatted list of todos according to the profile parameters passed at class            *
-     * initialization and the given output format, whether it be "html" or "markdown"                                                               *
+     * This is the main method of this class. It returns the formatted list of todos according to the profile parameters and output format passed   *
+     * at class initialization,                                                                                                                     *
      ***********************************************************************************************************************************************/
-    public async getTodos(outputFormat){
-        this.outputFormat = outputFormat
+    public async getTodos(){
         var todoString = ""
         var todoList = await getTodos(this.profile.showCompleted, this.profile.showNoDue, this.profile.searchCriteria)
         var todoMap = this.groupBy(todoList)
@@ -186,4 +194,83 @@ export abstract class BaseFormat {
         var endOfYear = new Date(new Date().getFullYear(), 11, 31) 
         return endOfYear
     }
+}
+
+
+/** DateFormat **************************************************************************************************************************************
+ * This format groups tasks by date and sorts them by time.                                                                                         *
+ ***************************************************************************************************************************************************/
+class DateFormat extends BaseFormat {
+
+    /** getFormatHeadingString **********************************************************************************************************************
+     * Sets the heading according to the built in full date string creation method if the task has a due date or otherwise sets it to "No Due Date" *
+     ***********************************************************************************************************************************************/
+    protected getFormatHeadingString(todo){
+        if (todo.todo_due != 0) {
+            return this.getFullDateString(todo.todo_due)
+        } else {
+            return "No Due Date"
+        } 
+    }
+
+    /** getFormatTodoString *************************************************************************************************************************
+     * Formats the todo by prepending it with the time it should be done                                                                            *
+    ************************************************************************************************************************************************/
+    protected getFormatTodoString(todo, heading){
+        var dueTime = todo.todo_due != 0 ? `${this.getTimeString(todo.todo_due)} - ` : ""
+        return `${dueTime}${todo.title}`
+    }
+}
+
+/** IntervalFormat **********************************************************************************************************************************
+ * This format groups todos by specific dates then names the todo according to the due time on that date                                            *
+ ***************************************************************************************************************************************************/
+class IntervalFormat extends BaseFormat {
+
+    protected getFormatHeadingString(todo){
+        var heading = ""
+        var todoDate =  new Date(todo.todo_due)
+        if (todo.todo_due == 0){
+            heading = "No Due Date"
+        } else if (todoDate < this.getStartOfToday()){
+            heading = "Overdue"
+        } else if (todoDate < this.getEndOfToday()){
+            heading = "Today"
+        } else if (todoDate < this.getEndOfThisWeek()){
+            heading = "This Week"
+        } else if (todoDate < this.getEndOfThisMonth()){
+            heading = "This Month"
+        } else if (todoDate < this.getEndOfThisYear()){
+            heading = "This Year"
+        } else {
+            heading = "Future"
+        }
+        return heading
+    }
+
+    protected getFormatTodoString(todo, heading){
+        var dueDate = ""
+        if (heading == "Overdue") {
+            dueDate = `${this.getFullDateString(todo.todo_due)} - `
+        } else if (heading == "Today") {
+            dueDate = `${this.getTimeString(todo.todo_due)} - `
+        } else if (heading == "This Week") {
+            dueDate = `${this.getWeekdayString(todo.todo_due)} - `
+        } else if (heading == "This Month"){
+            dueDate =  `${this.getDateString(todo.todo_due)} - `
+        } else if (heading == "This Year"){
+            dueDate = `${this.getDateString(todo.todo_due)} - `
+        } else if (heading == "Future") {
+            dueDate = `${this.getFullDateString(todo.todo_due)} - `
+        }
+        return `${dueDate}${todo.title}`
+    }
+}
+
+/** formats *****************************************************************************************************************************************
+ * This convenience dict stores all formats using their names as keys                                                                               *
+ ***************************************************************************************************************************************************/
+export var formats = {
+    'interval': IntervalFormat,
+    'date': DateFormat,
 }

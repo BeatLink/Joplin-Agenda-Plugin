@@ -10,7 +10,7 @@ let yearFormatSelect = document.getElementById("yearFormatSelect")
 let monthFormatSelect = document.getElementById("monthFormatSelect")
 let dayFormatSelect = document.getElementById("dayFormatSelect")
 let weekdayFormatSelect = document.getElementById("weekdayFormatSelect")
-let timeFormatCheckbox = document.getElementById("timeFormatCheckbox")
+let timeIs12HourCheckbox = document.getElementById("timeIs12HourCheckbox")
 let profileDataInput = document.getElementById("profileDataInput")
 
 // Connect Event Handlers
@@ -24,12 +24,13 @@ yearFormatSelect.addEventListener("change", saveProfileData)
 monthFormatSelect.addEventListener("change", saveProfileData)
 dayFormatSelect.addEventListener("change", saveProfileData)
 weekdayFormatSelect.addEventListener("change", saveProfileData)
-timeFormatCheckbox.addEventListener("change", saveProfileData)
+timeIs12HourCheckbox.addEventListener("change", saveProfileData)
 
 // Load Profile Data
 function loadProfileData() {
     var profileString = atob(profileDataInput.value)
     var profileObject = JSON.parse(profileString)
+    console.log(profileObject)
     nameInput.value = profileObject["name"]
     searchCriteriaInput.value = profileObject["searchCriteria"]
     noteIDInput.value = profileObject["noteID"]
@@ -40,7 +41,7 @@ function loadProfileData() {
     monthFormatSelect.value = profileObject["monthFormat"]
     dayFormatSelect.value = profileObject["dayFormat"]
     weekdayFormatSelect.value = profileObject["weekdayFormat"]
-    timeFormatCheckbox.checked = profileObject["timeFormat"]
+    timeIs12HourCheckbox.checked = profileObject["timeIs12Hour"]
 }
 
 // Save Profile Data
@@ -56,7 +57,7 @@ function saveProfileData(){
         "monthFormat": monthFormatSelect.value,
         "dayFormat": dayFormatSelect.value,
         "weekdayFormat": weekdayFormatSelect.value,
-        "timeFormat": timeFormatCheckbox.checked
+        "timeIs12Hour": timeIs12HourCheckbox.checked
     }
     var profileString = JSON.stringify(profileObject)
     profileDataInput.value = btoa(profileString)

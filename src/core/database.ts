@@ -1,37 +1,21 @@
 /** README ******************************************************************************************************************************************
- *                                                                                                                                                  * 
- *  This file contains all functions involved in managing the agenda profile database.                                                              *
- *  This sqlite3 database is stored in the plugin directory and holds all of the settings for each agenda profile.                                  *
- *                                                                                                                                                  *
+ * This file contains all functions involved in managing the agenda profile database.                                                               *
+ * This sqlite3 database is stored in the plugin directory and holds all of the settings for each agenda profile.                                   *
  ***************************************************************************************************************************************************/
 
 /** Imports ****************************************************************************************************************************************/
 import joplin from "api";
-import { Profile } from "./profile";
 const fs = joplin.require('fs-extra')
 const sqlite3 = joplin.require('sqlite3')
 
 /** Variable Setup *********************************************************************************************************************************/
-var databasePath = null
 var database = null
-
-/** setupDatabase ***********************************************************************************************************************************
- * Runs the code required for database initialization and record updates. This should run at  program start.                                        *
- ***************************************************************************************************************************************************/
-export async function setupDatabase(){
-    console.info("Setting up Database")
-    var pluginDir = await joplin.plugins.dataDir()
-    databasePath = pluginDir + "/profiles.sqlite3"
-    await fs.ensureDir(pluginDir)
-    database = new sqlite3.Database(databasePath)
-    await createTable()
-}
 
 /** runQuery ****************************************************************************************************************************************
  * Sqlite3 does not support async/await functionality, thus the need for this promise based function to run the sqlite functions. If there are      *
  * better ways to do this, please let me know                                                                                                       *
  ***************************************************************************************************************************************************/
-export async function runQuery(func, SQLQuery, parameters): Promise<any>{
+async function runQuery(func, SQLQuery, parameters): Promise<any>{
     return await new Promise(
         (resolve, reject) => {
             database[func](SQLQuery, parameters, (err, row) => { err ? reject(err) : resolve(row) })
@@ -42,64 +26,52 @@ export async function runQuery(func, SQLQuery, parameters): Promise<any>{
 /** createTable *************************************************************************************************************************************
  * Creates the database table if it doesnt exist                                                                                                    *
  ***************************************************************************************************************************************************/
-export async function createTable(){
+async function createTable(){
     var createQuery = `
         CREATE TABLE IF NOT EXISTS Profile (
             id INTEGER PRIMARY KEY,
-            name TEXT,
-            searchCriteria TEXT,
-            noteID TEXT,
-            showCompleted BOOLEAN,
-            showNoDue BOOLEAN,
-            displayFormat TEXT,
-            yearFormat TEXT,
-            monthFormat TEXT,
-            dayFormat TEXT,
-            weekdayFormat TEXT,
-            timeIs12Hour BOOLEAN
+            name TEXT DEFAULT "New Profile", 
+            searchCriteria TEXT DEFAULT "",
+            noteID TEXT DEFAULT "",
+            showCompleted BOOLEAN DEFAULT 0,
+            showNoDue BOOLEAN DEFAULT 0,
+            displayFormat TEXT DEFAULT "interval",
+            yearFormat TEXT DEFAULT "numeric",
+            monthFormat TEXT DEFAULT "long",
+            dayFormat TEXT DEFAULT "numeric",
+            weekdayFormat TEXT DEFAULT "long",
+            timeIs12Hour BOOLEAN DEFAULT 1
         )
     `
     await runQuery('run', createQuery, {})
 }
 
-/** createRecord ************************************************************************************************************************************
- * Creates a new recurrence record in the recurrence database when given the noteID and recurrence data object.                                     *
+/** createProfile ***********************************************************************************************************************************
+ * Creates a new profile in the database with default settings. The ID of the created profile is returned                                           *
  ***************************************************************************************************************************************************/
-export async function createRecord(profile=new Profile()){
+export async function createProfile(){
     await runQuery('run', `INSERT INTO Profile DEFAULT VALUES`, {})
-    var id = await getLastRowID()
-    await updateRecord(id, profile);
-    return id
-}
-
-async function getLastRowID(){
     return (await runQuery("get", " SELECT LAST_INSERT_ROWID()", {}))['LAST_INSERT_ROWID()']
 }
 
-/** getAllRecords ***********************************************************************************************************************************
- * Gets all records from the database                                                                                                               *
+/** getAllProfiles **********************************************************************************************************************************
+ * Gets all profiless from the database                                                                                                             *
  ***************************************************************************************************************************************************/
-export async function getAllRecords(){
-    var records = await runQuery('all', `SELECT * FROM Profile`, {})
-    var allProfiles = {}
-    for (var record of records){
-        allProfiles[record.id] = getRecordAsProfile(record)
-    }
-    return allProfiles
+export async function getAllProfiles(){
+    return await runQuery('all', `SELECT * FROM Profile`, {})
 }
 
-/** getRecord ***************************************************************************************************************************************
- * Gets recurrence record from the database for the corresponding note ID                                                                           *
+/** getProfile ***************************************************************************************************************************************
+ * Gets profile from the database for the corresponding profile ID                                                                                  *
  ***************************************************************************************************************************************************/
-export async function getRecord(id){
-    var record = await runQuery('get', `SELECT * FROM Profile WHERE id = $id`, {$id: id})
-    return getRecordAsProfile(record)
+export async function getProfile(profileID){
+    return await runQuery('get', `SELECT * FROM Profile WHERE id = $id`, {$id: profileID})
 }
 
-/** UpdateRecord ************************************************************************************************************************************
- * This is a helper function that updates a recurrence record in the database when given the noteID and recurrence data object                      *
+/** UpdateProfile ***********************************************************************************************************************************
+ * Updates a profile in the database when given the profile ID and profile dict                                                                     *
  ***************************************************************************************************************************************************/
-export async function updateRecord(id, profile){
+export async function updateProfile(id, profile){
     var updateQuery = `
         UPDATE Profile
         SET
@@ -134,29 +106,26 @@ export async function updateRecord(id, profile){
 }
 
 /** deleteRecord ************************************************************************************************************************************
- * This is a helper function that deletes a record from the database for the corresponding ID.                                                      *
+ * Deletes a profile record from the database for the corresponding ID, so long as its not the last profile                                         *
  ***************************************************************************************************************************************************/
-export async function deleteRecord(id){
-    await runQuery('run', `DELETE FROM Profile WHERE id = $id`, {$id: id})
+export async function deleteProfile(id){
+    if ((await getAllProfiles()).length > 1){
+        await runQuery('run', `DELETE FROM Profile WHERE id = $id`, {$id: id})
+    } else {
+        throw new Error("At least one profile must be in the database");
+    }
 }
 
-/** getRecordAsProfile ******************************************************************************************************************************
- * Converts a database record from an sqlite3 output to an agenda profile object                                                                    *
+/** setupDatabase ***********************************************************************************************************************************
+ * Creates the folder the database will be stored in then creates the database. This should run at plugin startup.                                  *
  ***************************************************************************************************************************************************/
-function getRecordAsProfile(record): Profile{
-    if (record != undefined){
-        var profile = new Profile()
-        profile.name = record.name
-        profile.searchCriteria = record.searchCriteria
-        profile.noteID = record.noteID
-        profile.showCompleted = record.showCompleted
-        profile.showNoDue = record.showNoDue
-        profile.displayFormat = record.displayFormat
-        profile.yearFormat = record.yearFormat
-        profile.monthFormat = record.monthFormat
-        profile.dayFormat = record.dayFormat
-        profile.weekdayFormat = record.weekdayFormat
-        profile.timeIs12Hour = record.timeIs12Hour
-        return profile
+ export async function setupDatabase(){
+    var pluginDir = await joplin.plugins.dataDir()
+    var databasePath = pluginDir + "/profiles.sqlite3"
+    await fs.ensureDir(pluginDir)
+    database = new sqlite3.Database(databasePath)
+    await createTable()
+    if ((await getAllProfiles()).length < 1){
+        await createProfile()
     }
 }

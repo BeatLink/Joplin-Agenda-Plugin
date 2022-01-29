@@ -1,3 +1,8 @@
+/** README ******************************************************************************************************************************************
+ * This file is responsible for setting up and managing the menus for the plugin                                                                    *
+ ***************************************************************************************************************************************************/
+
+/** Imports ****************************************************************************************************************************************/
 import joplin from "api"
 import { MenuItemLocation } from "api/types"
 
@@ -8,7 +13,10 @@ import { MenuItemLocation } from "api/types"
     await joplin.views.menus.create(
         'agendaMenu', 
         "Agenda", 
-        [{commandName: 'toggleProfileEditMode'}],
+        [
+            {commandName: 'toggleShowProfileControls'},
+            {commandName: 'togglePanelVisibility'}
+        ],
         MenuItemLocation.Tools
     )
 }

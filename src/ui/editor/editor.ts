@@ -1,17 +1,20 @@
+/** README ******************************************************************************************************************************************
+ * The profile editor dialog allows the user to edit the profile settings and customizations as well as to delete the profile                       *
+ ***************************************************************************************************************************************************/
+
+/** Imports ****************************************************************************************************************************************/
 import joplin from "api";
-import { updateInterfaces } from "../../core/updater";
-import { createRecord, deleteRecord, getRecord, updateRecord } from "../../core/database";
-import { Profile } from "../../core/profile";
+import { deleteProfile, getAllProfiles, getProfile, updateProfile } from "../../core/database";
 const fs = joplin.require('fs-extra');
 
+/** Variable Setup *********************************************************************************************************************************/
 var dialog = null;
 var baseHtml = null
 
-/** createDialog ************************************************************************************************************************************
- * Initializes the recurrence dialog                                                                                                                *
+/** setupEditor *************************************************************************************************************************************
+ * Initializes the profile editor dialog                                                                                                            *
  ***************************************************************************************************************************************************/
 export async function setupEditor(){
-    console.info("Setting up Editor")
     var HTMLFilePath = (await joplin.plugins.installationDir()) + "/ui/editor/editor.html"
     baseHtml = await fs.readFile(HTMLFilePath, 'utf8');
     dialog = await joplin.views.dialogs.create('editor');
@@ -24,70 +27,35 @@ export async function setupEditor(){
     await joplin.views.dialogs.addScript(dialog, '/ui/editor/editor.css')
 }
 
-/** profileToString *********************************************************************************************************************************
- * Converts the given profile to a JSON string                                                                                                      *
+/** openEditor **************************************************************************************************************************************
+ * Opens the profile editor dialog for the given profile ID. If Save is clicked, the changes are saved to the database. IF delete is clicked, the   *
+ * delete confirmation dialog is opened                                                                                                             *
  ***************************************************************************************************************************************************/
-export function profileToString(profile){
-    var profileObject = {
-        "name": profile.name,
-        "searchCriteria": profile.searchCriteria,
-        "noteID": profile.noteID,
-        "showCompleted": profile.showCompleted,
-        "showNoDue": profile.showNoDue,
-        "displayFormat": profile.displayFormat,
-        "yearFormat": profile.yearFormat,
-        "monthFormat": profile.monthFormat,
-        "dayFormat": profile.dayFormat,
-        "weekdayFormat": profile.weekdayFormat,
-        "timeFormat": profile.timeIs12Hour
-    }
-    var profileString = JSON.stringify(profileObject)
-    return btoa(profileString)
-}
-
-/** profileFromString *******************************************************************************************************************************
- * Returns a profile object from the given JSON string                                                                                              *
- ***************************************************************************************************************************************************/
-export function profileFromString(profileString){
-    var profileObject = JSON.parse(atob(profileString))
-    var profile = new Profile()
-    profile.name = profileObject["name"]
-    profile.searchCriteria = profileObject["searchCriteria"]
-    profile.noteID = profileObject["noteID"]
-    profile.showCompleted = profileObject["showCompleted"]
-    profile.showNoDue = profileObject["showNoDue"]
-    profile.displayFormat = profileObject["displayFormat"]
-    profile.yearFormat = profileObject["yearFormat"]
-    profile.monthFormat = profileObject["monthFormat"]
-    profile.dayFormat = profileObject["dayFormat"]
-    profile.weekdayFormat = profileObject["weekdayFormat"]
-    profile.timeIs12Hour = profileObject["timeFormat"]
-    return profile
-}
-
-/** openDialog **************************************************************************************************************************************
- * Opens the recurrence dialog for the given noteID                                                                                                 *
- ***************************************************************************************************************************************************/
-export async function openEditor(profileID?){
-    if (profileID == undefined){
-        profileID = await createRecord()
-    }
-    var profile = await getRecord(profileID) 
-    var formattedHtml = baseHtml.replace("<<PROFILE_DATA>>", profileToString(profile))
+export async function openEditor(profileID){
+    var profile = await getProfile(profileID)
+    var formattedHtml = baseHtml.replace("<<PROFILE_DATA>>", btoa(JSON.stringify(profile)))
     await joplin.views.dialogs.setHtml(dialog, formattedHtml);
     var formResult = await joplin.views.dialogs.open(dialog)
     if (formResult.id == 'ok') {
-        profile = profileFromString(formResult.formData["profileDataForm"]["profileData"])
-        await updateRecord(profileID, profile)
+        profile = JSON.parse(atob(formResult.formData["profileDataForm"]["profileData"]))
+        await updateProfile(profileID, profile)
     } else if (formResult.id == "delete") {
-        await openDeleteConfirmation(profileID)
-    }
+        await openDeleteDialog(profileID)
+    }    
 }
 
-export async function openDeleteConfirmation(profileID){
-    var profile = await getRecord(profileID)
-    var response = await joplin.views.dialogs.showMessageBox(`Delete ${profile.name}?`)
-    if (response == 0) {
-        await deleteRecord(profileID)
+/** openDeleteDialog ********************************************************************************************************************************
+ * Opens a confirmation dialog to confirm the deletion of a profile. If OK is clicked, the profile is deleted from the database                     *
+ ***************************************************************************************************************************************************/
+export async function openDeleteDialog(profileID){
+    if ((await getAllProfiles()).length > 1){
+        var profile = await getProfile(profileID)
+        var response = await joplin.views.dialogs.showMessageBox(`Delete ${profile.name}?`)
+        if (response == 0) {
+            await deleteProfile(profileID)
+        }    
+    } else {
+        await joplin.views.dialogs.showMessageBox(`Unable to Delete: At least 1 profile must exist in database.`)
     }
+
 }

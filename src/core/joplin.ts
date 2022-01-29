@@ -1,3 +1,7 @@
+/** README *****************************************************************************************************************************************
+ * This file handles misc calls to the joplin plugin api                                                                                           *
+ **************************************************************************************************************************************************/
+
 /* Imports *****************************************************************************************************************************************/
 import joplin from 'api';
 
@@ -30,10 +34,16 @@ export async function openTodo(todoID){
     await joplin.commands.execute('openNote', todoID);
 }
 
+/** getNoteContent **********************************************************************************************************************************
+ * Gets the body of the note with the given noteID                                                                                                  *
+ ***************************************************************************************************************************************************/
 export async function getNoteContent(noteID){
     return await joplin.data.get(['notes', noteID], { fields: ['id', 'title', 'body']})
 }
 
+/** setNoteContent **********************************************************************************************************************************
+ * Sets the body of the note with the given noteID to the given note body                                                                           *
+ ***************************************************************************************************************************************************/
 export async function setNoteContent(noteID, noteBody){
     await joplin.data.put(['notes', noteID], null, { body: noteBody})
 }
@@ -47,7 +57,7 @@ export async function toggleTodoCompletion(todoID){
 }
 
 /** connectNoteChangedCallback **********************************************************************************************************************
- * Creates a polling function that runs a callback whenever a note changes                                                                          *
+ * Creates a polling function that runs a callback function whenever a note changes                                                                 *
  ***************************************************************************************************************************************************/
  export async function connectNoteChangedCallback(callback){
     var cursor = null

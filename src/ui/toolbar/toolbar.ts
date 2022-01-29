@@ -1,14 +1,18 @@
+/** README ******************************************************************************************************************************************
+ * This file is responsible for setting up and managing the buttons added to the toolbar                                                            *
+ ***************************************************************************************************************************************************/
+
+/** Imports ****************************************************************************************************************************************/
 import joplin from "api";
 import { ToolbarButtonLocation } from "api/types";
 
-/** registerToggleVisibilityCommand *****************************************************************************************************************
+/** setupToolbar ************************************************************************************************************************************
  * Registers a toolbar button to toggle the panel visibility between shown and hidden                                                               *
  ***************************************************************************************************************************************************/
 export async function setupToolbar() {
-    console.info("Setting up Toolbar")
     await joplin.views.toolbarButtons.create(
-        'agendaTogglePanelVisibilityButton',
-        'agendaTogglePanelVisibility',
+        'togglePanelVisibilityButton',
+        'togglePanelVisibility',
         ToolbarButtonLocation.NoteToolbar
     );
 }

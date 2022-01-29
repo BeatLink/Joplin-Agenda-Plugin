@@ -1,21 +1,16 @@
 /** Imports ****************************************************************************************************************************************/
 import joplin from "api";
 import { openTodo, toggleTodoCompletion } from "../../core/joplin";
-import { updateInterfaces } from "../../core/updater";
-import { IntervalFormat } from "../../core/formats/interval";
-import { DateFormat } from "../../core/formats/date";
-import { deleteRecord, getAllRecords, getRecord } from "../../core/database";
-import { openDeleteConfirmation, openEditor } from "../editor/editor";
+import { refreshInterfaces } from "../../core/refresher";
+import { createProfile, getAllProfiles, getProfile } from "../../core/database";
+import { openDeleteDialog, openEditor } from "../editor/editor";
+import { formats } from "../../core/formats";
 import { getCurrentProfileID, setCurrentProfileID } from "../../core/settings";
-import { Profile } from "../../core/profile";
 const fs = joplin.require('fs-extra');
 
 /** Variable Declaration ***************************************************************************************************************************/
 var panel = null;
 var baseHtml = "";
-
-
-//implement css for panel and profile editor
 
 /** createPanel *************************************************************************************************************************************
  * Creates the panel in joplin and connects the evwent handler.                                                                                     *
@@ -36,21 +31,22 @@ async function eventHandler(message){
         await openTodo(message[1])
     } else if (message[0] == 'todoChecked'){
         await toggleTodoCompletion(message[1])
-        await updateInterfaces()
+        await refreshInterfaces()
     } else if (message[0] == 'profilesDropdownChanged'){
         await setCurrentProfileID(message[1])
-        await updateInterfaces()
+        await refreshInterfaces()
     } else if (message[0] == 'createProfileClicked'){
-        await openEditor()
-        await updateInterfaces()    
+        var id = await createProfile()
+        await openEditor(id)
+        await refreshInterfaces()    
     } else if (message[0] == 'editProfileClicked'){
         var id = await getCurrentProfileID()
         await openEditor(id)
-        await updateInterfaces()
+        await refreshInterfaces()
     } else if (message[0] == 'deleteProfileClicked'){
         var id = await getCurrentProfileID()
-        await openDeleteConfirmation(id)
-        await updateInterfaces()
+        await openDeleteDialog(id)
+        await refreshInterfaces()
     }
 }    
 
@@ -62,36 +58,54 @@ export async function togglePanelVisibility() {
     await joplin.views.panels.show(panel, !visibility);
 }
 
-export async function getProfilesHTML(){
-    var allProfiles = await getAllRecords()
-    var currentProfileID = await getCurrentProfileID()
-    var htmlString = ""
-    for (var id in allProfiles){
-        var selected = id == currentProfileID ? "selected" : ""
-        var profile = allProfiles[id]
-        htmlString += `<option value="${id}" ${selected}>${profile.name}</option>`
-    }
-    return htmlString
+/** toggleShowProfileControls ***********************************************************************************************************************
+ * Toggles between showing and hiding the profile editor buttons (create, edit and delte profile) on the main panel									*
+ ***************************************************************************************************************************************************/
+ export async function toggleShowProfileControls() {
+	var showProfileControls = await joplin.settings.value("showProfileControls")
+	await joplin.settings.setValue("showProfileControls", !showProfileControls)
+	await refreshPanelData()
 }
 
-
-/** updatePanelData *********************************************************************************************************************************
- * Displays all todos in the panel, grouped by date and sorted by time                                                                              *
+/** refreshPanelData ********************************************************************************************************************************
+ * Displays all todos in the panel, according to the formatting specified by the profile and format                                                 *
  ***************************************************************************************************************************************************/
- export async function updatePanelData(){
-    var formats = {
-        'interval': IntervalFormat,
-        'date': DateFormat,
-    }
+ export async function refreshPanelData(){
+    var profileID = await getCurrentProfileID()
+    var profile = await getProfile(profileID)
+    var htmlString = baseHtml
+    htmlString = htmlString.replace("<<PROFILE_CONTROLS>>", await getProfileControlsHTML())
+    var formatter = new formats[profile.displayFormat](profile, 'html')
+    var todosHtml = await formatter.getTodos()
+    var htmlString = htmlString.replace("<<TODOS>>", todosHtml)
+    await joplin.views.panels.setHtml(panel, htmlString);    
+}
+
+/** getProfileControlsHTML **************************************************************************************************************************
+ * Returns a string representing the HTML containing the profile dropdown and the create, edit and delete buttons                                   *
+ ***************************************************************************************************************************************************/
+async function getProfileControlsHTML(){
+    var htmlString = `    
+        <section id="profileControls">
+            <select id="profileDropdown" onchange="onProfilesDropdownChanged(this.value)">
+                <<PROFILES_LIST>>
+            </select>
+            <section id=profileButtonsSection style="display: <<SHOW_PROFILE_CONTROLS>>;">
+                <i class="fa fa-plus" title="Create New Profile" aria-hidden="true" onclick="onCreateProfileClicked()"></i>
+                <i class="fa fa-edit" title="Edit Profile" aria-hidden="true" onclick="onEditProfileClicked()"></i>
+                <i class="fa fa-trash" title="Delete Profile" aria-hidden="true" onclick="onDeleteProfileClicked()"></i>        
+            </section>
+        </section>
+    `
+    var showProfileControls = await joplin.settings.value("showProfileControls")
+    var htmlString = htmlString.replace("<<SHOW_PROFILE_CONTROLS>>", showProfileControls == true ? "flex" : "none")
     var currentProfileID = await getCurrentProfileID()
-    var currentProfile = await getRecord(currentProfileID)
-    var profileEditMode = await joplin.settings.value("profileEditMode")
-    var profilesList = await getProfilesHTML()
-    var profile = currentProfile ? currentProfile : new Profile()
-    var formatter = new formats[profile.displayFormat](profile)
-    var todosHtml = await formatter.getTodos('html')
-    var htmlStringWithProfileEditMode = baseHtml.replace("PROFILE_EDIT_MODE", profileEditMode)
-    var htmlStringWithProfile = htmlStringWithProfileEditMode.replace("<<PROFILES_LIST>>", profilesList)
-    var htmlString = htmlStringWithProfile.replace("<<TODOS>>", todosHtml)    
-    await joplin.views.panels.setHtml(panel, htmlString);
- }
+    var profileListString = ""
+    for (var profile of await getAllProfiles()){
+        console.error(profile)
+        var selected = currentProfileID && currentProfileID == profile.id ? "selected" : ""
+        profileListString += `<option value="${profile.id}" ${selected}>${profile.name}</option>`
+    }
+    var htmlString = htmlString.replace("<<PROFILES_LIST>>", profileListString)
+    return htmlString
+}

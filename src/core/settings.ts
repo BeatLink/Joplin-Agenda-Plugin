@@ -1,15 +1,16 @@
+/** README ******************************************************************************************************************************************
+ * This file contains all functions related to settings configuration and management.																*
+ ***************************************************************************************************************************************************/
+
 /** Imports ****************************************************************************************************************************************/
 import joplin from "api"
 import { SettingItemType } from "api/types"
-import { Profile } from "./profile"
-import { updateInterfaces } from "./updater"
-import { createRecord, getAllRecords, getRecord } from "./database"
+import { getAllProfiles, getProfile } from "./database"
 
 /** setupSettings ***********************************************************************************************************************************
  * Sets up the settings used by the plugin																											*
  ***************************************************************************************************************************************************/
 export async function setupSettings(){
-	console.info("Setting up Settings")
     await joplin.settings.registerSettings({
 		"currentProfileID": {
 			label: "The ID of the current profile used by Agenda",
@@ -20,40 +21,33 @@ export async function setupSettings(){
 		}
 	})
 	await joplin.settings.registerSettings({
-		"profileEditMode": {
-			label: "Enable profile management controls",
-			value: 'flex',
-            options: {
-                'flex': 'Show',
-                'none': 'Hide',
-            },
-            isEnum: true,
-			type: SettingItemType.String,
+		"showProfileControls": {
+			label: "Show Profile Controls",
+			value: true,
+			type: SettingItemType.Bool,
 			public: true,
 			section: 'section',
 		}
 	})
 }
 
-export async function toggleProfileEditMode() {
-	var editMode = await joplin.settings.value("profileEditMode")
-	var newMode = editMode == "flex" ? "none" : "flex"
-	await joplin.settings.setValue("profileEditMode", newMode)
-	await updateInterfaces()
+/** setCurrentProfileID *****************************************************************************************************************************
+ * Saves the current profile ID to settings																											*
+ ***************************************************************************************************************************************************/
+export async function setCurrentProfileID(profileID){
+	await joplin.settings.setValue("currentProfileID", profileID)
 }
 
-export async function setCurrentProfileID(id){
-	await joplin.settings.setValue("currentProfileID", id)
-}
-
-//get current id, if not set to profile, get first profile in all records. If no profile in records, create one. 
+/** getCurrentProfileID *****************************************************************************************************************************
+ * Gets the currently selected profile ID from settings and check that it is valid. If it empty or points to an invalid profile, the first profile	*
+ * in the database is selected as the new current profile.																							*																									*
+ ***************************************************************************************************************************************************/
 export async function getCurrentProfileID(){
-	var currentID = await joplin.settings.value("currentProfileID")
-	/*if (await getRecord(currentID) == undefined){
-		var allProfileIDs = Object.keys(await getAllRecords())
-		currentID = allProfileIDs.length < 1 ? await createRecord(new Profile()) :  allProfileIDs[0]
-		await setCurrentProfileID(currentID)
-	}*/
-	return currentID
+	var currentProfileID = await joplin.settings.value("currentProfileID")
+	var currentProfile = await getProfile(currentProfileID)
+	if (!currentProfile){
+		currentProfileID = (await getAllProfiles())[0].id
+		await setCurrentProfileID(currentProfileID)
+	}
+	return currentProfileID
 }
-
