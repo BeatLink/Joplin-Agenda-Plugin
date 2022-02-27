@@ -37,7 +37,7 @@ async function eventHandler(message){
         await refreshInterfaces()
     } else if (message[0] == 'createProfileClicked'){
         var id = await createProfile()
-        await openEditor(id)
+        await openEditor(id, true)
         await refreshInterfaces()    
     } else if (message[0] == 'editProfileClicked'){
         var id = await getCurrentProfileID()
