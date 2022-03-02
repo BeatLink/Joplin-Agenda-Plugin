@@ -4,12 +4,14 @@
 
 /** Imports ****************************************************************************************************************************************/
 import joplin from "api";
-import { deleteProfile, getAllProfiles, getProfile, updateProfile } from "../../core/database";
+import { createProfile, deleteProfile, getAllProfiles, getProfile, updateProfile } from "../../core/database";
 const fs = joplin.require('fs-extra');
 
 /** Variable Setup *********************************************************************************************************************************/
 var dialog = null;
 var baseHtml = null
+var createButtons = [{title: "Cancel", id: "cancel"}, {title: "Create", id: "ok"}]
+var editButtons = [{title: "Cancel", id: "cancel"}, {title: "Delete", id: "delete"}, {title: "Save", id: "ok"}]
 
 /** setupEditor *************************************************************************************************************************************
  * Initializes the profile editor dialog                                                                                                            *
@@ -18,11 +20,6 @@ export async function setupEditor(){
     var HTMLFilePath = (await joplin.plugins.installationDir()) + "/ui/editor/editor.html"
     baseHtml = await fs.readFile(HTMLFilePath, 'utf8');
     dialog = await joplin.views.dialogs.create('editor');
-    await joplin.views.dialogs.setButtons(dialog, [
-        {title: "Cancel", id: "cancel"},
-        {title: "Delete", id: "delete"},
-        {title: "Save", id: "ok"}
-    ])
     await joplin.views.dialogs.addScript(dialog, '/ui/editor/editor.js')
     await joplin.views.dialogs.addScript(dialog, '/ui/editor/editor.css')
 }
@@ -31,18 +28,20 @@ export async function setupEditor(){
  * Opens the profile editor dialog for the given profile ID. If Save is clicked, the changes are saved to the database. IF delete is clicked, the   *
  * delete confirmation dialog is opened                                                                                                             *
  ***************************************************************************************************************************************************/
-export async function openEditor(profileID, creating=false){
-    var profile = await getProfile(profileID)
-    var formattedHtml = baseHtml.replace("<<PROFILE_DATA>>", btoa(JSON.stringify(profile)))
+export async function openEditor(profileID?){   
+    var formattedHtml = profileID == null ? baseHtml : baseHtml.replace("<<PROFILE_DATA>>", btoa(JSON.stringify(await getProfile(profileID))))
+    var dialogButtons = profileID == null ? createButtons : editButtons
+    await joplin.views.dialogs.setButtons(dialog, dialogButtons)
     await joplin.views.dialogs.setHtml(dialog, formattedHtml);
     var formResult = await joplin.views.dialogs.open(dialog)
     if (formResult.id == 'ok') {
-        profile = JSON.parse(atob(formResult.formData["profileDataForm"]["profileData"]))
+        var profile = JSON.parse(atob(formResult.formData["profileDataForm"]["profileData"]))
+        if (profileID == null){
+            profileID = await createProfile()
+        }
         await updateProfile(profileID, profile)
     } else if (formResult.id == "delete") {
         await openDeleteDialog(profileID)
-    } else if (formResult.id == "cancel" && creating) {
-        await deleteProfile(profileID)
     }
 }
 
