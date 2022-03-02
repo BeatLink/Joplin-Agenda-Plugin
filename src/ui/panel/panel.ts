@@ -2,7 +2,7 @@
 import joplin from "api";
 import { openTodo, toggleTodoCompletion } from "../../core/joplin";
 import { refreshInterfaces } from "../../core/refresher";
-import { createProfile, getAllProfiles, getProfile } from "../../core/database";
+import { getAllProfiles, getProfile } from "../../core/database";
 import { openDeleteDialog, openEditor } from "../editor/editor";
 import { formats } from "../../core/formats";
 import { getCurrentProfileID, setCurrentProfileID } from "../../core/settings";
@@ -36,8 +36,7 @@ async function eventHandler(message){
         await setCurrentProfileID(message[1])
         await refreshInterfaces()
     } else if (message[0] == 'createProfileClicked'){
-        var id = await createProfile()
-        await openEditor(id, true)
+        await openEditor()
         await refreshInterfaces()    
     } else if (message[0] == 'editProfileClicked'){
         var id = await getCurrentProfileID()
