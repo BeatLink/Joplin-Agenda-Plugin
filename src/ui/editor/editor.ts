@@ -31,7 +31,7 @@ export async function setupEditor(){
  * Opens the profile editor dialog for the given profile ID. If Save is clicked, the changes are saved to the database. IF delete is clicked, the   *
  * delete confirmation dialog is opened                                                                                                             *
  ***************************************************************************************************************************************************/
-export async function openEditor(profileID){
+export async function openEditor(profileID, creating=false){
     var profile = await getProfile(profileID)
     var formattedHtml = baseHtml.replace("<<PROFILE_DATA>>", btoa(JSON.stringify(profile)))
     await joplin.views.dialogs.setHtml(dialog, formattedHtml);
@@ -41,7 +41,9 @@ export async function openEditor(profileID){
         await updateProfile(profileID, profile)
     } else if (formResult.id == "delete") {
         await openDeleteDialog(profileID)
-    }    
+    } else if (formResult.id == "cancel" && creating) {
+        await deleteProfile(profileID)
+    }
 }
 
 /** openDeleteDialog ********************************************************************************************************************************
