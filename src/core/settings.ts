@@ -11,6 +11,13 @@ import { getAllProfiles, getProfile } from "./database"
  * Sets up the settings used by the plugin																											*
  ***************************************************************************************************************************************************/
 export async function setupSettings(){
+	await joplin.settings.registerSection(
+		"section", {
+			label: "Agenda",
+			iconName: 'fas fa-calendar',
+			description: "Settings for the Agenda Plugin",
+			name: "agenda"
+		})
     await joplin.settings.registerSettings({
 		"currentProfileID": {
 			label: "The ID of the current profile used by Agenda",
