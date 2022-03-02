@@ -28,18 +28,20 @@ timeIs12HourCheckbox.addEventListener("change", saveProfileData)
 
 // Load Profile Data
 function loadProfileData() {
-    var profileObject = JSON.parse(atob(profileDataInput.value))
-    nameInput.value = profileObject["name"]
-    searchCriteriaInput.value = profileObject["searchCriteria"]
-    noteIDInput.value = profileObject["noteID"]
-    showCompletedCheckbox.checked = profileObject["showCompleted"]
-    showNoDueCheckbox.checked = profileObject["showNoDue"]
-    displayFormatSelect.value = profileObject["displayFormat"]
-    yearFormatSelect.value = profileObject["yearFormat"]
-    monthFormatSelect.value = profileObject["monthFormat"]
-    dayFormatSelect.value = profileObject["dayFormat"]
-    weekdayFormatSelect.value = profileObject["weekdayFormat"]
-    timeIs12HourCheckbox.checked = profileObject["timeIs12Hour"]
+    if (profileDataInput.value != "<<PROFILE_DATA>>"){
+        var profileObject = JSON.parse(atob(profileDataInput.value))
+        nameInput.value = profileObject["name"]
+        searchCriteriaInput.value = profileObject["searchCriteria"]
+        noteIDInput.value = profileObject["noteID"]
+        showCompletedCheckbox.checked = profileObject["showCompleted"]
+        showNoDueCheckbox.checked = profileObject["showNoDue"]
+        displayFormatSelect.value = profileObject["displayFormat"]
+        yearFormatSelect.value = profileObject["yearFormat"]
+        monthFormatSelect.value = profileObject["monthFormat"]
+        dayFormatSelect.value = profileObject["dayFormat"]
+        weekdayFormatSelect.value = profileObject["weekdayFormat"]
+        timeIs12HourCheckbox.checked = profileObject["timeIs12Hour"]    
+    }
 }
 
 // Save Profile Data
@@ -61,3 +63,4 @@ function saveProfileData(){
 }
 
 loadProfileData()
+saveProfileData()
