@@ -81,7 +81,7 @@ abstract class BaseFormat {
             return `
                 <p>
                     <input type="checkbox" onchange="onTodoChecked('${todo.id}')" ${checkedString}>
-                    <a onclick="onTodoClicked('${todo.id}')">${todoString}</a>
+                    <a onclick="onTodoClicked('${todo.id}')" style="cursor: pointer;">${todoString}</a>
                 </p>
             `            
         }
