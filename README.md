@@ -23,9 +23,6 @@ Agenda is already in the Joplin plugin repository so it can be installed from th
 Agenda uses profiles to know how to sort, organize and present to-dos in the todo list. You can create many different profiles to generate the to-do lists
 you need. For example, you may have one profile for your work to-dos and another for your personal to-dos. You can have one for active tasks, and one for tasks being held. The only limit to the profile system is your imagination and the Joplin search system. 
 
-### Showing and Hiding the Panel
-To show or hide the panel, click the calendar (&#f133;) icon in the toolbar, or click the menu option under Tools -> Agenda
-
 ### Creating a Profile
 * To create a profile, click the plus (&#f067;) button in the panel, beside the profile dropdown, fill out the profile options and then press create.
 
@@ -70,6 +67,9 @@ To show or hide the panel, click the calendar (&#f133;) icon in the toolbar, or 
 
 #### Time Formats
 * The time format checkbox allows you to switch between AM/PM or 24 hour time. 
+
+### Showing and Hiding the Panel
+To show or hide the panel, click the calendar (&#f133;) icon in the toolbar, or click the menu option under Tools -> Agenda
 
 ### Settings
 * The show profile controls checkbox toggles the create, edit and delete buttons in the panel.
