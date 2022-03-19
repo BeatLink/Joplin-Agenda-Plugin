@@ -55,20 +55,3 @@ export async function toggleTodoCompletion(todoID){
     var note = await joplin.data.get(['notes', todoID], {fields: ['todo_completed']});
     await joplin.data.put(['notes', todoID], null, { todo_completed: !note.todo_completed});
 }
-
-/** connectNoteChangedCallback **********************************************************************************************************************
- * Creates a polling function that runs a callback function whenever a note changes                                                                 *
- ***************************************************************************************************************************************************/
- export async function connectNoteChangedCallback(callback){
-    var cursor = null
-    async function processChanges(){
-        do {
-            var response = await joplin.data.get(['events'], { fields: ['id', 'item_type', 'item_id', 'type', 'created_time'], cursor: cursor})
-            for (var item of response.items) { 
-                callback(item) 
-            }
-            cursor = response.cursor
-        } while (response.has_more)    
-    }
-    setInterval(processChanges, 5000)
-}

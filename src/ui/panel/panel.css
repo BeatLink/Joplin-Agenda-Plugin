@@ -5,12 +5,19 @@ body {
     font-size: medium;
 }
 
+.heading {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
 #profileControls {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    margin-top: 20px;
+    margin: 20px 0 10px;
 }
 
 select {

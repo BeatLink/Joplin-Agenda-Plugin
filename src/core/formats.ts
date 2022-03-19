@@ -61,10 +61,14 @@ abstract class BaseFormat {
      * This returns the given heading string with the proper output format(i.e html or markdown)                                                    *
      ***********************************************************************************************************************************************/
     private getHeadingString(headingString){
-        if (this.outputFormat == "markdown"){
-            return `## ${headingString}\n`    
-        } else if (this.outputFormat == "html") {
-            return `<h2>${headingString}</h2>`; 
+        if (headingString){
+            if (this.outputFormat == "markdown"){
+                return `## ${headingString}\n`    
+            } else if (this.outputFormat == "html") {
+                return `<h2>${headingString}</h2>`; 
+            }    
+        } else {
+            return ""
         }
     }
     
@@ -196,6 +200,26 @@ abstract class BaseFormat {
     }
 }
 
+/** BasicFormat **************************************************************************************************************************************
+ * This format groups doesnt group tasks at all.                                                                                                     *
+ ***************************************************************************************************************************************************/
+ class BasicFormat extends BaseFormat {
+
+    /** getFormatHeadingString **********************************************************************************************************************
+     * Sets the heading according to the built in full date string creation method if the task has a due date or otherwise sets it to "No Due Date" *
+     ***********************************************************************************************************************************************/
+    protected getFormatHeadingString(todo){
+        return ""
+    }
+
+    /** getFormatTodoString *************************************************************************************************************************
+     * Formats the todo by prepending it with the time it should be done                                                                            *
+    ************************************************************************************************************************************************/
+    protected getFormatTodoString(todo, heading){
+        return todo.title
+    }
+}
+
 
 /** DateFormat **************************************************************************************************************************************
  * This format groups tasks by date and sorts them by time.                                                                                         *
@@ -271,6 +295,7 @@ class IntervalFormat extends BaseFormat {
  * This convenience dict stores all formats using their names as keys                                                                               *
  ***************************************************************************************************************************************************/
 export var formats = {
+    'basic': BasicFormat,
     'interval': IntervalFormat,
     'date': DateFormat,
 }

@@ -6,6 +6,7 @@
 import joplin from "api"
 import { SettingItemType } from "api/types"
 import { getAllProfiles, getProfile } from "./database"
+import { setupTimer } from "./timer"
 
 /** setupSettings ***********************************************************************************************************************************
  * Sets up the settings used by the plugin																											*
@@ -18,24 +19,31 @@ export async function setupSettings(){
 			description: "Settings for the Agenda Plugin",
 			name: "agenda"
 		})
-    await joplin.settings.registerSettings({
+	await joplin.settings.registerSettings({
 		"currentProfileID": {
 			label: "The ID of the current profile used by Agenda",
 			value: null,
 			type: SettingItemType.Int,
 			public: false,
 			section: 'section',
-		}
-	})
-	await joplin.settings.registerSettings({
+		},
 		"showProfileControls": {
 			label: "Show Profile Controls",
 			value: true,
 			type: SettingItemType.Bool,
 			public: true,
 			section: 'section',
+		}, 
+		"updateFrequency": {
+			label: "How many seconds should agenda wait before updating the panel and notes",
+			value: 10,
+			type: SettingItemType.Int,
+			public: true,
+			section: 'section',
 		}
+
 	})
+	await joplin.settings.onChange(setupTimer)
 }
 
 /** setCurrentProfileID *****************************************************************************************************************************

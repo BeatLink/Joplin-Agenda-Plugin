@@ -8,7 +8,7 @@
 /** Imports *****************************************************************************************************************************************/
 import joplin from 'api'
 import { setupCommands } from './core/commands'
-import { setupRefresher, refreshInterfaces } from './core/refresher'
+import { refreshInterfaces, setupTimer } from './core/timer'
 import { setupDatabase } from './core/database'
 import { setupSettings } from './core/settings'
 import { setupPanel } from './ui/panel/panel'
@@ -32,6 +32,6 @@ joplin.plugins.register({ onStart: setupPlugin })
     await setupMenu()
     await setupPanel()
     await setupEditor()
-    await setupRefresher()
+    await setupTimer()
     await refreshInterfaces()
 }

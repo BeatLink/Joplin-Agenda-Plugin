@@ -1,7 +1,7 @@
 /** Imports ****************************************************************************************************************************************/
 import joplin from "api";
 import { openTodo, toggleTodoCompletion } from "../../core/joplin";
-import { refreshInterfaces } from "../../core/refresher";
+import { refreshInterfaces } from "../../core/timer";
 import { getAllProfiles, getProfile } from "../../core/database";
 import { openDeleteDialog, openEditor } from "../editor/editor";
 import { formats } from "../../core/formats";
@@ -46,6 +46,8 @@ async function eventHandler(message){
         var id = await getCurrentProfileID()
         await openDeleteDialog(id)
         await refreshInterfaces()
+    } else if (message[0] == 'updateInterfacesClicked'){
+        await refreshInterfaces()
     }
 }    
 
@@ -73,7 +75,7 @@ export async function togglePanelVisibility() {
     var profileID = await getCurrentProfileID()
     var profile = await getProfile(profileID)
     var htmlString = baseHtml
-    htmlString = htmlString.replace("<<PROFILE_CONTROLS>>", await getProfileControlsHTML())
+    htmlString = htmlString.replace("<<PROFILE_CONTROLS>>", await getProfileControlsHTML(profileID))
     var formatter = new formats[profile.displayFormat](profile, 'html')
     var todosHtml = await formatter.getTodos()
     var htmlString = htmlString.replace("<<TODOS>>", todosHtml)
@@ -83,7 +85,7 @@ export async function togglePanelVisibility() {
 /** getProfileControlsHTML **************************************************************************************************************************
  * Returns a string representing the HTML containing the profile dropdown and the create, edit and delete buttons                                   *
  ***************************************************************************************************************************************************/
-async function getProfileControlsHTML(){
+async function getProfileControlsHTML(currentProfileID){
     var htmlString = `    
         <section id="profileControls">
             <select id="profileDropdown" onchange="onProfilesDropdownChanged(this.value)">
@@ -98,7 +100,6 @@ async function getProfileControlsHTML(){
     `
     var showProfileControls = await joplin.settings.value("showProfileControls")
     var htmlString = htmlString.replace("<<SHOW_PROFILE_CONTROLS>>", showProfileControls == true ? "flex" : "none")
-    var currentProfileID = await getCurrentProfileID()
     var profileListString = ""
     for (var profile of await getAllProfiles()){
         var selected = currentProfileID && currentProfileID == profile.id ? "selected" : ""

@@ -39,3 +39,11 @@ async function onProfilesDropdownChanged(profileID){
  async function onDeleteProfileClicked(profileID){
     await webviewApi.postMessage(['deleteProfileClicked']);
 }
+
+
+/** onUpdateInterfacesClicked **************************************************************************************************************************
+ * When the user requests an interface update, this function sends a message to the main plugin              *
+ ***************************************************************************************************************************************************/
+ async function onUpdateInterfacesClicked(){
+    await webviewApi.postMessage(['updateInterfacesClicked']);
+}
