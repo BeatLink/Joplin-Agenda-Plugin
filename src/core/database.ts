@@ -23,6 +23,36 @@ async function runQuery(func, SQLQuery, parameters): Promise<any>{
     )
 }
 
+/** getDatabaseVersion ******************************************************************************************************************************
+ * Gets the version of the database                                                                                                                 *
+ ***************************************************************************************************************************************************/
+ export async function getDatabaseVersion(){
+    return (await runQuery('get', `PRAGMA user_version`, {}))["user_version"]
+}
+
+/** upgradeDatabaseTo1 ******************************************************************************************************************************
+ * Upgrades the database to 1.0                                                                                                                     *
+ ***************************************************************************************************************************************************/
+ async function upgradeDatabaseTo1(){
+    var upgradeQuery = `
+        ALTER TABLE Profile
+        ADD sortOrder INTEGER DEFAULT 0
+    `
+    await runQuery('run', upgradeQuery, {})
+    await runQuery('run', `PRAGMA user_version = 1`, {})
+}
+
+
+/** applyDatabaseUpgrades ***************************************************************************************************************************
+ * Applies any needed upgrades to the database                                                                                                      *
+ ***************************************************************************************************************************************************/
+ async function applyDatabaseUpgrades(){
+    if (await getDatabaseVersion() == 0){
+        await upgradeDatabaseTo1()
+    }
+}
+
+
 /** createTable *************************************************************************************************************************************
  * Creates the database table if it doesnt exist                                                                                                    *
  ***************************************************************************************************************************************************/
@@ -58,7 +88,7 @@ export async function createProfile(){
  * Gets all profiless from the database                                                                                                             *
  ***************************************************************************************************************************************************/
 export async function getAllProfiles(){
-    return await runQuery('all', `SELECT * FROM Profile`, {})
+    return await runQuery('all', `SELECT * FROM Profile ORDER BY sortOrder, name ASC`, {})
 }
 
 /** getProfile ***************************************************************************************************************************************
@@ -76,6 +106,7 @@ export async function updateProfile(id, profile){
         UPDATE Profile
         SET
             name = $name,
+            sortOrder = $sortOrder,
             searchCriteria = $searchCriteria,
             noteID = $noteID,
             showCompleted = $showCompleted,
@@ -91,6 +122,7 @@ export async function updateProfile(id, profile){
     var updateParameters = {
         $id: id,
         $name: profile.name,
+        $sortOrder: profile.sortOrder,
         $searchCriteria: profile.searchCriteria,
         $noteID: profile.noteID,
         $showCompleted: profile.showCompleted,
@@ -125,6 +157,7 @@ export async function deleteProfile(id){
     await fs.ensureDir(pluginDir)
     database = new sqlite3.Database(databasePath)
     await createTable()
+    await applyDatabaseUpgrades()
     if ((await getAllProfiles()).length < 1){
         await createProfile()
     }

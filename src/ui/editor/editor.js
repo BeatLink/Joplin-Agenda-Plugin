@@ -1,6 +1,7 @@
 
 // Get Form Elements
 let nameInput = document.getElementById("nameInput")
+let sortOrderInput = document.getElementById("sortOrderInput")
 let searchCriteriaInput = document.getElementById("searchCriteriaInput")
 let noteIDInput = document.getElementById("noteIDInput")
 let showCompletedCheckbox = document.getElementById("showCompletedCheckbox")
@@ -15,6 +16,7 @@ let profileDataInput = document.getElementById("profileDataInput")
 
 // Connect Event Handlers
 nameInput.addEventListener("change", saveProfileData)
+sortOrderInput.addEventListener("change", saveProfileData)
 searchCriteriaInput.addEventListener("change", saveProfileData)
 noteIDInput.addEventListener("change", saveProfileData)
 showCompletedCheckbox.addEventListener("change", saveProfileData)
@@ -31,6 +33,7 @@ function loadProfileData() {
     if (profileDataInput.value != "<<PROFILE_DATA>>"){
         var profileObject = JSON.parse(atob(profileDataInput.value))
         nameInput.value = profileObject["name"]
+        sortOrderInput.value = profileObject["sortOrder"]
         searchCriteriaInput.value = profileObject["searchCriteria"]
         noteIDInput.value = profileObject["noteID"]
         showCompletedCheckbox.checked = profileObject["showCompleted"]
@@ -48,6 +51,7 @@ function loadProfileData() {
 function saveProfileData(){
     var profileObject = {
         "name": nameInput.value,
+        "sortOrder": sortOrderInput.value,
         "searchCriteria": searchCriteriaInput.value,
         "noteID": noteIDInput.value,
         "showCompleted": showCompletedCheckbox.checked,
