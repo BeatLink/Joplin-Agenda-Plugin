@@ -301,6 +301,8 @@ class IntervalFormat extends BaseFormat {
             dueDate = `${this.getFullDateString(todo.todo_due)} - `
         } else if (heading == "Today") {
             dueDate = `${this.getTimeString(todo.todo_due)} - `
+        } else if (heading == "Tomorrow") {
+            dueDate = `${this.getTimeString(todo.todo_due)} - `
         } else if (heading == "This Week") {
             dueDate = `${this.getWeekdayString(todo.todo_due)} - `
         } else if (heading == "This Month"){

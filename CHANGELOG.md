@@ -1,3 +1,6 @@
+# 3.4.1 
+- Fix time display bug in tomorrow heading of interval format
+
 # 3.4.0 
 - Add Tomorrow heading to interval format
 
