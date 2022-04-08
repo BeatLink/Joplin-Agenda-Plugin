@@ -1,3 +1,6 @@
+# 3.6.0
+- Add support for custom css
+
 # 3.5.0
 - Add support for sorting to-dos without due dates at the end of lists
 

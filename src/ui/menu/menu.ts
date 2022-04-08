@@ -14,8 +14,9 @@ import { MenuItemLocation } from "api/types"
         'agendaMenu', 
         "Agenda", 
         [
+            {commandName: 'togglePanelVisibility'},
             {commandName: 'toggleShowProfileControls'},
-            {commandName: 'togglePanelVisibility'}
+            {commandName: 'showStylerDialog'},            
         ],
         MenuItemLocation.Tools
     )

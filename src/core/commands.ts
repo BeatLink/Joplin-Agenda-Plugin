@@ -4,6 +4,7 @@
 
 /** Imports ****************************************************************************************************************************************/
 import joplin from "api";
+import { openStyler } from "../ui/styler/styler";
 import { togglePanelVisibility, toggleShowProfileControls } from "../ui/panel/panel";
 
 /** setupCommands ***********************************************************************************************************************************
@@ -20,5 +21,10 @@ export async function setupCommands(){
         name: 'toggleShowProfileControls',
         label: 'Toggle Profile Edit Mode',
         execute: toggleShowProfileControls
+    })
+    await joplin.commands.register({
+        name: 'showStylerDialog',
+        label: 'Set Panel CSS',
+        execute: openStyler
     })
 }

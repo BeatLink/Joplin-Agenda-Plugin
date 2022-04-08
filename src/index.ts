@@ -15,6 +15,7 @@ import { setupPanel } from './ui/panel/panel'
 import { setupMenu } from './ui/menu/menu'
 import { setupEditor } from './ui/editor/editor'
 import { setupToolbar } from './ui/toolbar/toolbar'
+import { setupStyler } from './ui/styler/styler'
 
 /** Plugin Registration *****************************************************************************************************************************
  * Registers the plugin with joplin.                                                                                                                *
@@ -30,6 +31,7 @@ joplin.plugins.register({ onStart: setupPlugin })
     await setupCommands()
     await setupToolbar()
     await setupMenu()
+    await setupStyler()
     await setupPanel()
     await setupEditor()
     await setupTimer()

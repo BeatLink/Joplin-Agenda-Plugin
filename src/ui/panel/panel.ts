@@ -20,6 +20,10 @@ export async function setupPanel(){
     baseHtml = await fs.readFile((await joplin.plugins.installationDir()) + "/ui/panel/panel.html", "utf-8");
     await joplin.views.dialogs.addScript(panel, '/ui/panel/panel.js')
     await joplin.views.dialogs.addScript(panel, '/ui/panel/panel.css')
+    var cssData = await fs.readFile((await joplin.plugins.installationDir()) + '/custom.css', "utf-8");
+    if (cssData && cssData.trim()) {
+        await joplin.views.dialogs.addScript(panel, '/custom.css')
+    }
     await joplin.views.panels.onMessage(panel, eventHandler)
 }
 
