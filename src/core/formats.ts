@@ -47,6 +47,7 @@ abstract class BaseFormat {
         var todoString = ""
         var todoList = await getTodos(this.profile.showCompleted, this.profile.showNoDue, this.profile.searchCriteria)
         var todoMap = this.groupBy(todoList)
+        console.log(todoMap)
         for (var headingGroup of todoMap){
             var heading = headingGroup[0]
             todoString += this.getHeadingString(heading)
@@ -172,6 +173,26 @@ abstract class BaseFormat {
         return endOfToday   
     }
 
+    /** getStartOfTomorrow ******************************************************************************************************************************
+     * Gets the date representing the start of the next day. Provided as convenience for use in custom formats.                                         *                                                                    *
+     ***************************************************************************************************************************************************/
+     protected getStartOfTomorrow(){
+        var startOfTomorrow = new Date();
+        startOfTomorrow.setDate(startOfTomorrow.getDate() + 1)
+        startOfTomorrow.setHours(0,0,0,0);
+        return startOfTomorrow;
+    }
+
+    /** getEndOfTomorrow *****************************************************************************************************************************
+     * Gets the date representing the end of the next day. Provided as convenience for use in custom formats.                                        *                                                                    *
+     ************************************************************************************************************************************************/
+     protected getEndOfTomorrow(){
+        var endOfTomorrow = new Date();
+        endOfTomorrow.setDate(endOfTomorrow.getDate() + 1)
+        endOfTomorrow.setHours(23,59,59,999);
+        return endOfTomorrow;
+    }
+
     /** getEndOfThisWeek ********************************************************************************************************************************
      * Gets the date representing the end of the current week. Provided as convenience for use in custom formats                                        *                            *
      ***************************************************************************************************************************************************/
@@ -260,6 +281,8 @@ class IntervalFormat extends BaseFormat {
             heading = "Overdue"
         } else if (todoDate < this.getEndOfToday()){
             heading = "Today"
+        } else if (todoDate < this.getEndOfTomorrow()){
+            heading = "Tomorrow"
         } else if (todoDate < this.getEndOfThisWeek()){
             heading = "This Week"
         } else if (todoDate < this.getEndOfThisMonth()){

@@ -1,3 +1,6 @@
+# 3.4.0 
+- Add Tomorrow heading to interval format
+
 # 3.3.0
 - Update all profile notes at once
 
