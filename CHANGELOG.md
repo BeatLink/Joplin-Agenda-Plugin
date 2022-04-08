@@ -1,3 +1,6 @@
+# 3.5.0
+- Add support for sorting to-dos without due dates at the end of lists
+
 # 3.4.1 
 - Fix time display bug in tomorrow heading of interval format
 

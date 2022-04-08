@@ -4,6 +4,7 @@
  ***************************************************************************************************************************************************/
 
 /** Imports ****************************************************************************************************************************************/
+import joplin from "api";
 import { getTodos } from "./joplin";
 
 /** BaseFormat **************************************************************************************************************************************
@@ -47,7 +48,13 @@ abstract class BaseFormat {
         var todoString = ""
         var todoList = await getTodos(this.profile.showCompleted, this.profile.showNoDue, this.profile.searchCriteria)
         var todoMap = this.groupBy(todoList)
-        console.log(todoMap)
+        if (await joplin.settings.value("moveDueDatesToEnd")){
+            var noDueDates = todoMap.get("No Due Date")
+            if (noDueDates){
+                todoMap.delete("No Due Date");
+                todoMap.set("No Due Date", noDueDates);
+            }
+        }
         for (var headingGroup of todoMap){
             var heading = headingGroup[0]
             todoString += this.getHeadingString(heading)

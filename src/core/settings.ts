@@ -40,6 +40,13 @@ export async function setupSettings(){
 			type: SettingItemType.Int,
 			public: true,
 			section: 'section',
+		},
+		"moveDueDatesToEnd": {
+			label: "Sort tasks without due dates at the end of the list",
+			value: false,
+			type: SettingItemType.Bool,
+			public: true,
+			section: 'section',
 		}
 
 	})
