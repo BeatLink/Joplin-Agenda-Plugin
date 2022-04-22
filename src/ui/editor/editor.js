@@ -13,6 +13,7 @@ let dayFormatSelect = document.getElementById("dayFormatSelect")
 let weekdayFormatSelect = document.getElementById("weekdayFormatSelect")
 let timeIs12HourCheckbox = document.getElementById("timeIs12HourCheckbox")
 let profileDataInput = document.getElementById("profileDataInput")
+let noDueDatesAtEndCheckbox = document.getElementById("noDueDatesAtEndCheckbox")
 
 // Connect Event Handlers
 nameInput.addEventListener("change", saveProfileData)
@@ -27,6 +28,7 @@ monthFormatSelect.addEventListener("change", saveProfileData)
 dayFormatSelect.addEventListener("change", saveProfileData)
 weekdayFormatSelect.addEventListener("change", saveProfileData)
 timeIs12HourCheckbox.addEventListener("change", saveProfileData)
+noDueDatesAtEndCheckbox.addEventListener("change", saveProfileData)
 
 // Load Profile Data
 function loadProfileData() {
@@ -43,7 +45,8 @@ function loadProfileData() {
         monthFormatSelect.value = profileObject["monthFormat"]
         dayFormatSelect.value = profileObject["dayFormat"]
         weekdayFormatSelect.value = profileObject["weekdayFormat"]
-        timeIs12HourCheckbox.checked = profileObject["timeIs12Hour"]    
+        timeIs12HourCheckbox.checked = profileObject["timeIs12Hour"]
+        noDueDatesAtEndCheckbox.checked = profileObject["noDueDatesAtEnd"]    
     }
 }
 
@@ -61,7 +64,8 @@ function saveProfileData(){
         "monthFormat": monthFormatSelect.value,
         "dayFormat": dayFormatSelect.value,
         "weekdayFormat": weekdayFormatSelect.value,
-        "timeIs12Hour": timeIs12HourCheckbox.checked
+        "timeIs12Hour": timeIs12HourCheckbox.checked,
+        "noDueDatesAtEnd": noDueDatesAtEndCheckbox.checked
     }
     profileDataInput.value = btoa(JSON.stringify(profileObject))
 }

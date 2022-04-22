@@ -14,15 +14,18 @@ import { getNoteContent, setNoteContent } from "./joplin"
 export async function refreshNoteData(){
     for (var profile of await getAllProfiles()){
         if (profile.noteID) {
-            var note = await getNoteContent(profile.noteID)
-            if (note != undefined){
-                var formatter = new formats[profile.displayFormat](profile, 'markdown')
-                var todosMd = await formatter.getTodos()
-                var baseMarkDown = `# <<PROFILE_NAME>>\n<<TODOS>>`
-                var markdownString = baseMarkDown.replace("<<PROFILE_NAME>>", profile.name)
-                var markdownString = markdownString.replace("<<TODOS>>", todosMd)
+            var formatter = new formats[profile.displayFormat](profile, 'markdown')
+            var todosMd = await formatter.getTodos()
+            var baseMarkDown = `# <<PROFILE_NAME>>\n<<TODOS>>`
+            var markdownString = baseMarkDown.replace("<<PROFILE_NAME>>", profile.name)
+            var markdownString = markdownString.replace("<<TODOS>>", todosMd)
+            try {
                 await setNoteContent(profile.noteID, markdownString)
-            }    
+            } catch (error) {
+                if (error.message != "Not Found") {
+                    throw error
+                }
+            }
         }    
     }
 }

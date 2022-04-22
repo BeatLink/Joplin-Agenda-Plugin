@@ -1,3 +1,10 @@
+# 3.7.0
+- Move the "Move No Due Dates to End" setting to per profile option
+- Remove checking for whether overview note exists
+
+# 3.6.1
+- Fix updating function so only one instance runs at a time
+
 # 3.6.0
 - Add support for custom css
 

@@ -48,7 +48,7 @@ abstract class BaseFormat {
         var todoString = ""
         var todoList = await getTodos(this.profile.showCompleted, this.profile.showNoDue, this.profile.searchCriteria)
         var todoMap = this.groupBy(todoList)
-        if (await joplin.settings.value("moveDueDatesToEnd")){
+        if (this.profile.noDueDatesAtEnd){
             var noDueDates = todoMap.get("No Due Date")
             if (noDueDates){
                 todoMap.delete("No Due Date");

@@ -23,33 +23,22 @@ async function runQuery(func, SQLQuery, parameters): Promise<any>{
     )
 }
 
-/** getDatabaseVersion ******************************************************************************************************************************
- * Gets the version of the database                                                                                                                 *
- ***************************************************************************************************************************************************/
- export async function getDatabaseVersion(){
-    return (await runQuery('get', `PRAGMA user_version`, {}))["user_version"]
-}
-
-/** upgradeDatabaseTo1 ******************************************************************************************************************************
- * Upgrades the database to 1.0                                                                                                                     *
- ***************************************************************************************************************************************************/
- async function upgradeDatabaseTo1(){
-    var upgradeQuery = `
-        ALTER TABLE Profile
-        ADD sortOrder INTEGER DEFAULT 0
-    `
-    await runQuery('run', upgradeQuery, {})
-    await runQuery('run', `PRAGMA user_version = 1`, {})
-}
-
-
 /** applyDatabaseUpgrades ***************************************************************************************************************************
  * Applies any needed upgrades to the database                                                                                                      *
  ***************************************************************************************************************************************************/
  async function applyDatabaseUpgrades(){
-    if (await getDatabaseVersion() == 0){
-        await upgradeDatabaseTo1()
+    async function getDatabaseVersion() {
+        return (await runQuery('get', `PRAGMA user_version`, {}))["user_version"]
     }
+    if (await getDatabaseVersion() < 1){
+        await runQuery('run', `ALTER TABLE Profile ADD sortOrder INTEGER DEFAULT 0`, {})
+        await runQuery('run', `PRAGMA user_version = 1`, {})
+    }
+    if (await getDatabaseVersion() < 2){
+        await runQuery('run', `ALTER TABLE Profile ADD noDueDatesAtEnd BOOLEAN DEFAULT false`, {})
+        await runQuery('run', `PRAGMA user_version = 2`, {})
+    }
+
 }
 
 
@@ -70,7 +59,9 @@ async function createTable(){
             monthFormat TEXT DEFAULT "long",
             dayFormat TEXT DEFAULT "numeric",
             weekdayFormat TEXT DEFAULT "long",
-            timeIs12Hour BOOLEAN DEFAULT 1
+            timeIs12Hour BOOLEAN DEFAULT 1,
+            sortOrder INTEGER DEFAULT 0,
+            noDueDatesAtEnd BOOLEAN DEFAULT false
         )
     `
     await runQuery('run', createQuery, {})
@@ -116,7 +107,8 @@ export async function updateProfile(id, profile){
             monthFormat = $monthFormat,
             dayFormat = $dayFormat,
             weekdayFormat = $weekdayFormat,
-            timeIs12Hour = $timeIs12Hour
+            timeIs12Hour = $timeIs12Hour,
+            noDueDatesAtEnd = $noDueDatesAtEnd
         WHERE id = $id
     `
     var updateParameters = {
@@ -132,7 +124,8 @@ export async function updateProfile(id, profile){
         $monthFormat: profile.monthFormat,
         $dayFormat: profile.dayFormat,
         $weekdayFormat: profile.weekdayFormat,
-        $timeIs12Hour: profile.timeIs12Hour
+        $timeIs12Hour: profile.timeIs12Hour,
+        $noDueDatesAtEnd: profile.noDueDatesAtEnd
     }
     await runQuery('run', updateQuery, updateParameters)
 }
