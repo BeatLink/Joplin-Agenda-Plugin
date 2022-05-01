@@ -1,3 +1,6 @@
+# 3.7.1
+- Fix database upgrading system to check if table columns actually exist instead of relying on database version number
+
 # 3.7.0
 - Move the "Move No Due Dates to End" setting to per profile option
 - Remove checking for whether overview note exists

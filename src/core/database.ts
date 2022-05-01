@@ -27,18 +27,18 @@ async function runQuery(func, SQLQuery, parameters): Promise<any>{
  * Applies any needed upgrades to the database                                                                                                      *
  ***************************************************************************************************************************************************/
  async function applyDatabaseUpgrades(){
-    async function getDatabaseVersion() {
-        return (await runQuery('get', `PRAGMA user_version`, {}))["user_version"]
+    async function columnInDatabase(columnName) {
+        var tableInfo = await runQuery('all', `PRAGMA TABLE_INFO('Profile')`, {})
+        return tableInfo.some((element, _index, _array) => {
+            return (element["name"] == columnName)
+        })        
     }
-    if (await getDatabaseVersion() < 1){
+    if (!await columnInDatabase("sortOrder")){
         await runQuery('run', `ALTER TABLE Profile ADD sortOrder INTEGER DEFAULT 0`, {})
-        await runQuery('run', `PRAGMA user_version = 1`, {})
     }
-    if (await getDatabaseVersion() < 2){
+    if (!await columnInDatabase("noDueDatesAtEnd")){
         await runQuery('run', `ALTER TABLE Profile ADD noDueDatesAtEnd BOOLEAN DEFAULT false`, {})
-        await runQuery('run', `PRAGMA user_version = 2`, {})
     }
-
 }
 
 
