@@ -29,13 +29,13 @@ export async function setupEditor(){
  * delete confirmation dialog is opened                                                                                                             *
  ***************************************************************************************************************************************************/
 export async function openEditor(profileID?){   
-    var formattedHtml = profileID == null ? baseHtml : baseHtml.replace("<<PROFILE_DATA>>", btoa(JSON.stringify(await getProfile(profileID))))
+    var formattedHtml = profileID == null ? baseHtml : baseHtml.replace("<<PROFILE_DATA>>", btoa(encodeURI(JSON.stringify(await getProfile(profileID)))))
     var dialogButtons = profileID == null ? createButtons : editButtons
     await joplin.views.dialogs.setButtons(dialog, dialogButtons)
     await joplin.views.dialogs.setHtml(dialog, formattedHtml);
     var formResult = await joplin.views.dialogs.open(dialog)
     if (formResult.id == 'ok') {
-        var profile = JSON.parse(atob(formResult.formData["profileDataForm"]["profileData"]))
+        var profile = JSON.parse(decodeURI(atob(formResult.formData["profileDataForm"]["profileData"])))
         if (profileID == null){
             profileID = await createProfile()
         }

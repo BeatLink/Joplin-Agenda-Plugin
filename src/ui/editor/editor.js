@@ -33,7 +33,7 @@ noDueDatesAtEndCheckbox.addEventListener("change", saveProfileData)
 // Load Profile Data
 function loadProfileData() {
     if (profileDataInput.value != "<<PROFILE_DATA>>"){
-        var profileObject = JSON.parse(atob(profileDataInput.value))
+        var profileObject = JSON.parse(decodeURI(atob(profileDataInput.value)))
         nameInput.value = profileObject["name"]
         sortOrderInput.value = profileObject["sortOrder"]
         searchCriteriaInput.value = profileObject["searchCriteria"]
@@ -67,7 +67,7 @@ function saveProfileData(){
         "timeIs12Hour": timeIs12HourCheckbox.checked,
         "noDueDatesAtEnd": noDueDatesAtEndCheckbox.checked
     }
-    profileDataInput.value = btoa(JSON.stringify(profileObject))
+    profileDataInput.value = btoa(encodeURI(JSON.stringify(profileObject)))
 }
 
 loadProfileData()
