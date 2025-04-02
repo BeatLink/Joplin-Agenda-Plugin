@@ -13,7 +13,7 @@ import joplin from 'api';
     const completed = showCompleted ? "" : "iscompleted:0"
     const noDue = showNoDue ? "" : "due:19700201"
     var allTodos = [];
-    let pageNum = 0;
+    let pageNum = 1;
     do {
         var response = await joplin.data.get(['search'], {
             query: `type:todo ${completed} ${noDue} ${searchCritera}`,
