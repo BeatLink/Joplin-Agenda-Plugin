@@ -1,5 +1,10 @@
 # Agenda
 
+> [!IMPORTANT]
+> **This repository is archived and no longer maintained.** I no longer use Joplin, so I have stopped working on this plugin.
+> [TheScriptingGuy](https://github.com/TheScriptingGuy) has forked it and continued the work at
+> [TheScriptingGuy/Joplin-Agenda-Plugin](https://github.com/TheScriptingGuy/Joplin-Agenda-Plugin). Please use that fork for new features, bug reports and pull requests.
+
 An agenda/calendar/schedule panel plugin for joplin that shows all uncompleted to-dos with a due date
 
 ## Screenshots
